@@ -841,7 +841,7 @@ namespace MiniRPG_CS
 			{
 				var counter = 0;
 				for (var directionIndex = 0; directionIndex < directions.Length; directionIndex++)
-					if (IsVoid(room.Position + directions[directionIndex])) if (++counter > 1) return room.Position;
+					if (IsVoid(room.Position + directions[directionIndex]) && ++counter > 1) return room.Position;
 			}
 			return PlayerPosition;
 		}

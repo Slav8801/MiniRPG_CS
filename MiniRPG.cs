@@ -204,7 +204,7 @@ namespace MiniRPG_CS
 			GetItemLines(ref roomItemLines, roomItem, roomItem.Slot);
 			if (item != null) GetItemLines(ref playerItemLines, item, item.Slot);
 			Console.WriteLine($"{Defines.FillTextToSize("| Player Item", Defines.COMPARISON_SHEET_WIDTH, " ")} | Room Item");
-			CombineTwoLists(playerItemLines, roomItemLines,  Defines.COMPARISON_SHEET_WIDTH);
+			CombineTwoLists(playerItemLines, roomItemLines, Defines.COMPARISON_SHEET_WIDTH);
 			Console.WriteLine($"{Underline} {Underline}\n");
 		}
 		public void DrawLeveledUpText() => Console.WriteLine($"| {Game.Instance.Player.CharacterName} has leveled up to level {Game.Instance.Level}.\n| They have {Game.Instance.Player.Resource(ResourceType.AbilityPoints).Current} unused ability points!\n{Underline}\n");
@@ -212,7 +212,7 @@ namespace MiniRPG_CS
 		public string GetItemLine(Item item, ResourceType resourceType) => $"{Defines.AddSpacesBeforeCapitals(resourceType.ToString())}: +{item.Resource(resourceType).MaxWithBonuses}{(Defines.Resources[(int)resourceType].IsPercentage ? "%" : string.Empty)}";
 		public string GetAbilityBonusLine(int abilityIndex, int bonsuIndex) => $"| +{Defines.AbilityBonuses[abilityIndex][bonsuIndex].Max} {Defines.AddSpacesBeforeCapitals(Defines.AbilityBonuses[abilityIndex][bonsuIndex].ResourceType.ToString())}";
 
-		private void CombineTwoLists(List<string> list1, List<string> list2, int text1Width) { for (var index = 0; index < (int)MathF.Max(list1.Count, list2.Count); index++) DrawSheetLine($"{(list1.Count > index ? list1[index] : string.Empty)}", $"{(list2.Count > index ? list2[index] : string.Empty)}", index > 0 ? "|" : string.Empty, text1Width); }
+		private void CombineTwoLists(List<string> list1, List<string> list2, int text1Width) { for (var index = 0; index < (int)MathF.Max(list1.Count, list2.Count); index++) DrawSheetLine($"{(list1.Count > index ? list1[index] : string.Empty)}", $"{(list2.Count > index ? list2[index] : string.Empty)}", "|", text1Width); }
 		private void DrawSheetLine(string text1, string text2, string separator, int text1Width) => Console.WriteLine($"|{Defines.FillTextToSize(text1, text1Width)}{separator}{text2}");
 		private void ShowOptions(string[] options)
 		{
@@ -221,7 +221,7 @@ namespace MiniRPG_CS
 		}
 		private void GetItemLines(ref List<string> equipmentLines, Item item, ItemSlot itemSlot)
 		{
-			equipmentLines.AddRange(new[] { string.Empty, $"___{itemSlot}: {(item == null ? "None Equipped" : item.ItemConfig.ItemName)}" });
+			equipmentLines.AddRange(new[] { string.Empty, $"___{itemSlot}: {(item == null ? "None Equipped" : item.ItemName)}" });
 			if (item == null) return;
 			if (item.ItemConfig.Slot == ItemSlot.Weapon) equipmentLines.AddRange(new[] { $" {GetItemLine(item, ResourceType.Damage)}", $" {GetItemLine(item, ResourceType.Attacks)}", $" {GetItemLine(item, ResourceType.CriticalChance)}" });
 			if (item.ItemConfig.Slot == ItemSlot.Armor) equipmentLines.AddRange(new[] { $" {GetItemLine(item, ResourceType.Armor)}", $" {GetItemLine(item, ResourceType.Evades)}" });
@@ -391,14 +391,14 @@ namespace MiniRPG_CS
 			var item = Game.Instance.Player.GetInventoryItemFromSlot(ItemSlot.Consumable);
 			Game.Instance.Player.RemoveInventoryItem(ItemSlot.Consumable);
 			var itemResource = item.GetConsumableResource();
-			ShowTextAndReset(new[] { $"Used {item.ItemConfig.ItemName} to {(itemResource.MaxWithBonuses > float.Epsilon ? "increase" : "damage")} {itemResource.ResourceType} by {itemResource.MaxWithBonuses}." });
+			ShowTextAndReset(new[] { $"Used {item.ItemName} to {(itemResource.MaxWithBonuses > float.Epsilon ? "increase" : "damage")} {itemResource.ResourceType} by {itemResource.MaxWithBonuses}." });
 		}
 	}
 
 	public class RoomState : State
 	{
 		public override StateType StateTypeId => StateType.Room;
-		protected override string[] BaseOptions => new string[] { $"Swap Item ({(Game.Instance.PlayerRoom.Item == null ? "None" : Game.Instance.PlayerRoom.Item.ItemConfig.ItemName)})", "Character Sheet", "Back to Map" };
+		protected override string[] BaseOptions => new string[] { $"Swap Item ({(Game.Instance.PlayerRoom.Item == null ? "None" : Game.Instance.PlayerRoom.Item.ItemName)})", "Character Sheet", "Back to Map" };
 		protected override Action[] BaseActions => new Action[] { SwapItem, () => OnChangeState?.Invoke(StateType.CharacterSheet), () => OnChangeState?.Invoke(StateType.Map) };
 
 		protected override void StateMain()
@@ -421,9 +421,10 @@ namespace MiniRPG_CS
 			if (Game.Instance.PlayerRoom.Item == null) ShowTextAndReset(new[] { "This room has no item." });
 			var roomItem = Game.Instance.PlayerRoom.Item;
 			var playerItem = Game.Instance.Player.GetInventoryItemFromSlot(roomItem.Slot);
+			Game.Instance.Player.RemoveInventoryItem(roomItem.Slot);
 			Game.Instance.Player.SetInventoryItemInSlot(roomItem);
 			Game.Instance.PlayerRoom.ReplaceItem(playerItem);
-			ShowTextAndReset(new[] { $"{(playerItem != null ? $"{playerItem.ItemConfig.ItemName}" : "Nothing")} dropped.", $"{roomItem.ItemConfig.ItemName} equipped." });
+			ShowTextAndReset(new[] { $"{(playerItem != null ? $"{playerItem.ItemName}" : "Nothing")} dropped.", $"{roomItem.ItemName} equipped." });
 		}
 	}
 
@@ -433,7 +434,7 @@ namespace MiniRPG_CS
 		protected override string[] BaseOptions => new string[] {
 			GetAttackString("Light Attack ", actors[playerIndex], (int)actors[playerIndex].Resource(ResourceType.Attacks).MaxWithBonuses, 0.3f, 1f),
 			GetAttackString("Heavy Attack ", actors[playerIndex], 1, 1f, 1.5f),
-			$"Use Consumable ({(actors[playerIndex].GetInventoryItemFromSlot(ItemSlot.Consumable) == null ? "None" : actors[playerIndex].GetInventoryItemFromSlot(ItemSlot.Consumable).ItemConfig.ItemName)})",
+			$"Use Consumable ({(actors[playerIndex].GetInventoryItemFromSlot(ItemSlot.Consumable) == null ? "None" : actors[playerIndex].GetInventoryItemFromSlot(ItemSlot.Consumable).ItemName)})",
 			"Debug: Win!", "Debug: Lose!", };
 		protected override Action[] BaseActions => new Action[] { () => LightAttack(actors[playerIndex], actors[opponentIndex]), () => HeavyAttack(actors[playerIndex], actors[opponentIndex]), () => UseConsumable(actors[playerIndex], actors[opponentIndex]), () => Won(40), Lost };
 
@@ -518,7 +519,7 @@ namespace MiniRPG_CS
 			if (attacker is Player && attacker.GetInventoryItemFromSlot(ItemSlot.Consumable) == null) DrawCombat();
 			if (IsActorDead(attacker) || IsActorDead(defender)) DrawCombat();
 			attackLists[turns] = new List<int>();
-			var itemIndex = 0; Defines.GetItemIndexWithName(attacker.GetInventoryItemFromSlot(ItemSlot.Consumable).ItemConfig.ItemName, ref itemIndex);
+			var itemIndex = 0; Defines.GetItemIndexWithName(attacker.GetInventoryItemFromSlot(ItemSlot.Consumable).ItemName, ref itemIndex);
 			attackLists[turns].Add(10000 + itemIndex);
 			if (attacker.UseConsumable()) attacker.RemoveInventoryItem(ItemSlot.Consumable);
 			if (turns > 0) DrawCombat();
@@ -581,8 +582,9 @@ namespace MiniRPG_CS
 
 	public class Item
 	{
+		public string ItemName => $"{ItemConfig.ItemName}{(GetResourcesWithBonuses().Length > 0 ? $" +{GetResourcesWithBonuses().Length}" : string.Empty)}";
 		public ItemSlot Slot => ItemConfig.Slot;
-		public int ItemHashId => ItemConfig.ItemName.GetHashCode();
+		public int ItemHashId => ItemName.GetHashCode();
 		public ItemConfig ItemConfig { get; private set; }
 
 		private List<Resource> resources = new List<Resource>();
@@ -640,7 +642,12 @@ namespace MiniRPG_CS
 		public void SetInventoryItemInSlot(Item item) => CanUpdateResources(inventory[(int)item.Slot] = item, (int)item.Slot);
 		public Item GetInventoryItemFromSlot(ItemSlot itemSlot) => inventory[(int)itemSlot];
 		public bool UseConsumable() => (inventory[(int)ItemSlot.Consumable]?.Use(this)).HasValue;
-		public void RemoveInventoryItem(ItemSlot itemSlot) => inventory[(int)itemSlot] = null;
+		public void RemoveInventoryItem(ItemSlot itemSlot)
+		{
+			UpdateResourcesWithItem(inventory[(int)itemSlot], true);
+			inventory[(int)itemSlot] = null;
+		}
+
 		public void GiveExperience(int amount)
 		{
 			if (Resource(ResourceType.Level).IsAtMax) { Resource(ResourceType.Experience).AddCurrent(-666f); return; }
@@ -665,7 +672,7 @@ namespace MiniRPG_CS
 			return true;
 		}
 		private void CanUpdateResources(Item item, int slot) { if (slot != (int)ItemSlot.Consumable) UpdateResourcesWithItem(inventory[slot] = item); }
-		private void UpdateResourcesWithItem(Item item) { for (var index = 0; index < resources.Count; index++) Resource(index).UpdateMaxBonus(item.ItemHashId, item.Resource(index).MaxWithBonuses); }
+		private void UpdateResourcesWithItem(Item item, bool willRemove = false) { for (var index = 0; index < resources.Count; index++) Resource(index).UpdateMaxBonus(item.ItemHashId, item.Resource(index).MaxWithBonuses, willRemove); }
 	}
 
 	public class Player : Actor

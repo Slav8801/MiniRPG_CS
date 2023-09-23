@@ -736,16 +736,16 @@ namespace MiniRPG_CS
 
 	public class Resource
 	{
-		public ResourceType ResourceType => ResourceConfig.ResourceType;
-		public ResourceConfig ResourceConfig { get; private set; }
+		public ResourceType ResourceType => resourceConfig.ResourceType;
 		public bool IsAtMax => (int)MathF.Round(MaxWithBonuses) == (int)MathF.Round(Current);
-		public float MaxWithBonuses => MathF.Min(ResourceConfig.Max + maxBonuses.Sum(x => x.Value), ResourceConfig.Cap);
+		public float MaxWithBonuses => MathF.Min(resourceConfig.Max + maxBonuses.Sum(x => x.Value), resourceConfig.Cap);
 		public float Current { get; private set; }
 		public bool HasBonuses => maxBonuses.Count > 0;
 
+		private ResourceConfig resourceConfig;
 		private Dictionary<int, float> maxBonuses = new Dictionary<int, float>();
 
-		public Resource(ResourceConfig resourceConfig) => ResourceConfig = new ResourceConfig(resourceConfig.ResourceType, resourceConfig.Max, resourceConfig.Cap, Current = resourceConfig.Starting, resourceConfig.BonusMod, resourceConfig.WillSetToMaxOnUpdate, resourceConfig.IsPercentage);
+		public Resource(ResourceConfig resourceConfig) => this.resourceConfig = new ResourceConfig(resourceConfig.ResourceType, resourceConfig.Max, resourceConfig.Cap, Current = resourceConfig.Starting, resourceConfig.BonusMod, resourceConfig.WillSetToMaxOnUpdate, resourceConfig.IsPercentage);
 
 		public void AddCurrent(float amount)
 		{
@@ -758,7 +758,7 @@ namespace MiniRPG_CS
 			if (willRemove && maxBonuses.ContainsKey(idHash)) maxBonuses.Remove(idHash);
 			if (!willRemove && maxBonuses.ContainsKey(idHash)) maxBonuses[idHash] = amount;
 			if (!willRemove && !maxBonuses.ContainsKey(idHash) && MathF.Abs(amount) > float.Epsilon) maxBonuses.Add(idHash, amount);
-			AddCurrent(ResourceConfig.WillSetToMaxOnUpdate ? MaxWithBonuses : 0);
+			AddCurrent(resourceConfig.WillSetToMaxOnUpdate ? MaxWithBonuses : 0);
 		}
 		public float GetBonusPoints(int idHash = 0, bool willRoundToInt = true) => willRoundToInt ? MathF.Round(idHash == 0 ? maxBonuses.Values.ElementAt(0) : maxBonuses[idHash]) : idHash == 0 ? maxBonuses.Values.ElementAt(0) : maxBonuses[idHash];
 	}

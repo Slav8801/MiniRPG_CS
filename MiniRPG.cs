@@ -574,7 +574,7 @@ namespace MiniRPG_CS
 			ItemName = itemName;
 			for (var index = 0; index < Defines.Resources.Count; index++)
 			{
-				ResourceConfigs.Add(new ResourceConfig(Defines.Resources[index].ResourceType, 0f, 0f, 0f));
+				ResourceConfigs.Add(new ResourceConfig(Defines.Resources[index].ResourceType, 0f, Defines.Resources[index].Cap, 0f));
 				ResourceConfigs[index].AddMax(presetValues?.FirstOrDefault(x => x.ResourceType == ResourceConfigs[index].ResourceType));
 			}
 		}
@@ -613,7 +613,7 @@ namespace MiniRPG_CS
 			return true;
 		}
 		public Resource GetConsumableResource() => ItemConfig.Slot == ItemSlot.Consumable ? resources.FirstOrDefault(x => x.MaxWithBonuses > float.Epsilon) : null;
-		public Resource[] GetResourcesWithBonuses() => resources.Where(x => x.Max != x.MaxWithBonuses)?.ToArray() ?? new Resource[0];
+		public Resource[] GetResourcesWithBonuses() => resources.Where(x => x.HasBonuses)?.ToArray() ?? new Resource[0];
 	}
 
 	public abstract class Actor
@@ -713,7 +713,7 @@ namespace MiniRPG_CS
 	public class ResourceConfig : IResource
 	{
 		public ResourceType ResourceType { get; private set; }
-		public float Cap { get; private set; }
+		public float Cap { get; private set; } = 10000f;
 		public float Max { get; private set; }
 		public float Starting { get; private set; }
 		public float BonusMod { get; private set; }
@@ -739,9 +739,9 @@ namespace MiniRPG_CS
 		public ResourceType ResourceType => ResourceConfig.ResourceType;
 		public ResourceConfig ResourceConfig { get; private set; }
 		public bool IsAtMax => (int)MathF.Round(MaxWithBonuses) == (int)MathF.Round(Current);
-		public float Max => ResourceConfig.Max;
 		public float MaxWithBonuses => MathF.Min(ResourceConfig.Max + maxBonuses.Sum(x => x.Value), ResourceConfig.Cap);
 		public float Current { get; private set; }
+		public bool HasBonuses => maxBonuses.Count > 0;
 
 		private Dictionary<int, float> maxBonuses = new Dictionary<int, float>();
 

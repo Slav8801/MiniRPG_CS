@@ -13,25 +13,25 @@ namespace MiniRPG_CS
 		public const bool DEBUG_ALWAYS_AMBUSH = true;
 		public static List<ResourceConfig> Resources => new List<ResourceConfig>
 		{
-			new ResourceConfig(ResourceType.None, 0f),
-			new ResourceConfig(ResourceType.Health, 200f, 10000f, 1.8f, false),
-			new ResourceConfig(ResourceType.Armor, 0f, 0f, 0.2f, true),
-			new ResourceConfig(ResourceType.Damage, 0f, 0f, 0.2f, true),
-			new ResourceConfig(ResourceType.Attacks, 0f, 0f, 0f, true),
-			new ResourceConfig(ResourceType.Evades, 0f, 0f, 0f, true),
-			new ResourceConfig(ResourceType.AbilityPoints, 100f, 2f),
-			new ResourceConfig(ResourceType.Experience, 10000f),
-			new ResourceConfig(ResourceType.Strength, 100f, 99f),
-			new ResourceConfig(ResourceType.Dexterity, 100f, 10f),
-			new ResourceConfig(ResourceType.Vitality, 100f, 10f),
-			new ResourceConfig(ResourceType.CriticalDamage, 125f, 125f, 0.1f, true, true),
-			new ResourceConfig(ResourceType.CriticalChance, 0f, 0f, 0.1f, true, true),
-			new ResourceConfig(ResourceType.ChanceToHit, 45f, 45f, 0.1f, true, true),
-			new ResourceConfig(ResourceType.ChanceToEvade, 15f, 15f, 0.1f, true, true),
-			new ResourceConfig(ResourceType.Level, 100f, 90f),
-			new ResourceConfig(ResourceType.Initiative, 0f, 0f, 0.2f, true),
-			new ResourceConfig(ResourceType.HealthRegeneration, 0f, 999f, 0.2f, true),
-			new ResourceConfig(ResourceType.Rations, 10000f, 30f),
+			new ResourceConfig(ResourceType.None, 0f, 0f),
+			new ResourceConfig(ResourceType.Health, 200f, 10000f, 10000f, 1.8f, false),
+			new ResourceConfig(ResourceType.Armor, 0f, 10000f, 0f, 0.2f, true),
+			new ResourceConfig(ResourceType.Damage, 0f, 10000f, 0f, 0.2f, true),
+			new ResourceConfig(ResourceType.Attacks, 0f, 5f, 0f, 0f, true),
+			new ResourceConfig(ResourceType.Evades, 0f, 5f, 0f, 0f, true),
+			new ResourceConfig(ResourceType.AbilityPoints, 100f, 100f, 2f),
+			new ResourceConfig(ResourceType.Experience, 10000f, 10000f),
+			new ResourceConfig(ResourceType.Strength, 100f, 100f, 10f),
+			new ResourceConfig(ResourceType.Dexterity, 100f, 100f, 10f),
+			new ResourceConfig(ResourceType.Vitality, 100f, 100f, 10f),
+			new ResourceConfig(ResourceType.CriticalDamage, 125f, 220f, 125f, 0.1f, true, true),
+			new ResourceConfig(ResourceType.CriticalChance, 0f, 75f, 0f, 0.1f, true, true),
+			new ResourceConfig(ResourceType.ChanceToHit, 45f, 95f, 45f, 0.1f, true, true),
+			new ResourceConfig(ResourceType.ChanceToEvade, 15f, 85f, 15f, 0.1f, true, true),
+			new ResourceConfig(ResourceType.Level, 100f, 100f, 90f),
+			new ResourceConfig(ResourceType.Initiative, 0f, 10000f, 0f, 0.2f, true),
+			new ResourceConfig(ResourceType.HealthRegeneration, 0f, 150f, 999f, 0.2f, true),
+			new ResourceConfig(ResourceType.Rations, 100f, 100f, 30f),
 		};
 		public static List<ResourceConfig[]> AbilityBonuses => new List<ResourceConfig[]>
 		{
@@ -713,17 +713,19 @@ namespace MiniRPG_CS
 	public class ResourceConfig : IResource
 	{
 		public ResourceType ResourceType { get; private set; }
+		public float Cap { get; private set; }
 		public float Max { get; private set; }
 		public float Starting { get; private set; }
 		public float BonusMod { get; private set; }
 		public bool WillSetToMaxOnUpdate { get; private set; }
 		public bool IsPercentage { get; private set; }
 
-		public ResourceConfig(ResourceType resourceType, float max, float starting = 0f, float bonusMod = 0f, bool willSetToMaxOnUpdate = false, bool isPercentage = false)
+		public ResourceConfig(ResourceType resourceType, float max, float cap = 10000f, float starting = 0f, float bonusMod = 0f, bool willSetToMaxOnUpdate = false, bool isPercentage = false)
 		{
 			ResourceType = resourceType;
-			Starting = starting;
+			Cap = cap;
 			Max = max;
+			Starting = starting;
 			BonusMod = bonusMod;
 			WillSetToMaxOnUpdate = willSetToMaxOnUpdate;
 			IsPercentage = isPercentage;
@@ -734,16 +736,16 @@ namespace MiniRPG_CS
 
 	public class Resource
 	{
-		public ResourceType ResourceType => ResourceBase.ResourceType;
-		public ResourceConfig ResourceBase { get; private set; }
+		public ResourceType ResourceType => ResourceConfig.ResourceType;
+		public ResourceConfig ResourceConfig { get; private set; }
 		public bool IsAtMax => (int)MathF.Round(MaxWithBonuses) == (int)MathF.Round(Current);
-		public float Max => ResourceBase.Max;
-		public float MaxWithBonuses => ResourceBase.Max + maxBonuses.Sum(x => x.Value);
+		public float Max => ResourceConfig.Max;
+		public float MaxWithBonuses => MathF.Min(ResourceConfig.Max + maxBonuses.Sum(x => x.Value), ResourceConfig.Cap);
 		public float Current { get; private set; }
 
 		private Dictionary<int, float> maxBonuses = new Dictionary<int, float>();
 
-		public Resource(ResourceConfig resourceConfig) => ResourceBase = new ResourceConfig(resourceConfig.ResourceType, resourceConfig.Max, Current = resourceConfig.Starting, resourceConfig.BonusMod, resourceConfig.WillSetToMaxOnUpdate, resourceConfig.IsPercentage);
+		public Resource(ResourceConfig resourceConfig) => ResourceConfig = new ResourceConfig(resourceConfig.ResourceType, resourceConfig.Max, resourceConfig.Cap, Current = resourceConfig.Starting, resourceConfig.BonusMod, resourceConfig.WillSetToMaxOnUpdate, resourceConfig.IsPercentage);
 
 		public void AddCurrent(float amount)
 		{
@@ -756,7 +758,7 @@ namespace MiniRPG_CS
 			if (willRemove && maxBonuses.ContainsKey(idHash)) maxBonuses.Remove(idHash);
 			if (!willRemove && maxBonuses.ContainsKey(idHash)) maxBonuses[idHash] = amount;
 			if (!willRemove && !maxBonuses.ContainsKey(idHash) && MathF.Abs(amount) > float.Epsilon) maxBonuses.Add(idHash, amount);
-			AddCurrent(ResourceBase.WillSetToMaxOnUpdate ? MaxWithBonuses : 0);
+			AddCurrent(ResourceConfig.WillSetToMaxOnUpdate ? MaxWithBonuses : 0);
 		}
 		public float GetBonusPoints(int idHash = 0, bool willRoundToInt = true) => willRoundToInt ? MathF.Round(idHash == 0 ? maxBonuses.Values.ElementAt(0) : maxBonuses[idHash]) : idHash == 0 ? maxBonuses.Values.ElementAt(0) : maxBonuses[idHash];
 	}

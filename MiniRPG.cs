@@ -8,6 +8,7 @@ namespace MiniRPG_CS
 	{
 		public const int LARGE_NUMBER = 665;
 		public const int COMPARISON_SHEET_WIDTH = 36;
+		public const int DEBUG_XP_FOR_WIN = 40;
 		public const RoomType DEBUG_ALL_ROOMS = RoomType.Fight;
 		public const bool DEBUG_ALWAYS_AMBUSH = true;
 		public static List<ResourceConfig> Resources => new List<ResourceConfig>
@@ -18,9 +19,9 @@ namespace MiniRPG_CS
 			new ResourceConfig(ResourceType.Damage, 0f, 0f, 0.2f, true),
 			new ResourceConfig(ResourceType.Attacks, 0f, 0f, 0f, true),
 			new ResourceConfig(ResourceType.Evades, 0f, 0f, 0f, true),
-			new ResourceConfig(ResourceType.AbilityPoints, 100f, 5f),
+			new ResourceConfig(ResourceType.AbilityPoints, 100f, 2f),
 			new ResourceConfig(ResourceType.Experience, 10000f),
-			new ResourceConfig(ResourceType.Strength, 100f, 10f),
+			new ResourceConfig(ResourceType.Strength, 100f, 99f),
 			new ResourceConfig(ResourceType.Dexterity, 100f, 10f),
 			new ResourceConfig(ResourceType.Vitality, 100f, 10f),
 			new ResourceConfig(ResourceType.CriticalDamage, 125f, 125f, 0.1f, true, true),
@@ -32,7 +33,7 @@ namespace MiniRPG_CS
 			new ResourceConfig(ResourceType.HealthRegeneration, 0f, 999f, 0.2f, true),
 			new ResourceConfig(ResourceType.Rations, 10000f, 30f),
 		};
-		public static List<ResourceConfig[]> AbilityBonusesPerPoint => new List<ResourceConfig[]>
+		public static List<ResourceConfig[]> AbilityBonuses => new List<ResourceConfig[]>
 		{
 			new[] {new ResourceConfig(ResourceType.Damage, 1f), new ResourceConfig(ResourceType.Armor, 0.5f), },
 			new[] {new ResourceConfig(ResourceType.ChanceToHit, 0.5f), new ResourceConfig(ResourceType.ChanceToEvade, 1f), new ResourceConfig(ResourceType.Initiative, 0.5f), },
@@ -113,7 +114,7 @@ namespace MiniRPG_CS
 	{
 		public static State PreviousState { get; private set; }
 		private State state;
-		private IOParser InputParser = new IOParser();
+		private IOUtility ioUtility = new IOUtility();
 
 		public MiniRPGStateMachine() => ChangeState(StateType.MainMenu);
 
@@ -122,14 +123,16 @@ namespace MiniRPG_CS
 			if (state != null && state.StateTypeId != newState.StateTypeId) PreviousState = state;
 			state = newState;
 			state.OnChangeState += ChangeState;
-			state.Initialize(InputParser);
+			state.Initialize(ioUtility);
 		}
 		private void ChangeState(StateType stateType) => new Action[] { null, () => GoToState(new MainMenuState()), () => GoToState(new CharacterCreationState()), () => GoToState(new MapState()), () => GoToState(new CharacterSheetState()), () => GoToState(new RoomState()), () => GoToState(new FightState()), }[(int)stateType].Invoke();
 	}
 
-	public class IOParser
+	public class IOUtility
 	{
 		public int LastInput { get; private set; }
+		public string Underline => Defines.FillTextToSize("|", Defines.COMPARISON_SHEET_WIDTH, "_");
+		public string Continue => "Press Enter to continue.";
 
 		public bool WaitForInput(int totalInputs)
 		{
@@ -138,25 +141,25 @@ namespace MiniRPG_CS
 			if (isInt && result >= 0 && result < totalInputs) LastInput = result;
 			return isInt && result >= 0 && result < totalInputs;
 		}
-		public void ProcessValidName(ref string characterName, Action onShowStateName)
+		public void ProcessValidName(ref string characterName, Action onAfterClear)
 		{
 			while (characterName.Length < 3 || characterName.Length > 12)
 			{
 				Console.Clear();
-				onShowStateName?.Invoke();
-				Console.WriteLine("Please type name between 3 and 12 characters long and press Enter.");
+				onAfterClear?.Invoke();
+				Console.WriteLine($"| Please type a name for your character.\n| It has to be between 3 and 12 characters long.\n{Underline}\n{Continue}");
 				characterName = Console.ReadLine();
 			}
 			Console.Clear();
 		}
-		public void ProcessValidInput(Action beforeOptions, string[] options, Action[] actions)
+		public void ProcessValidInput(Action onAfterClear, string[] options, Action[] actions)
 		{
-			beforeOptions?.Invoke();
+			onAfterClear?.Invoke();
 			ShowOptions(options);
 			while (!WaitForInput(actions.Length))
 			{
 				Console.Clear();
-				beforeOptions?.Invoke();
+				onAfterClear?.Invoke();
 				ShowOptions(options);
 				Console.WriteLine("Oops... Unrecognised input. Try again!");
 			}
@@ -192,7 +195,7 @@ namespace MiniRPG_CS
 			var equipmentLines = new List<string>() { string.Empty, string.Empty, $"___Supplies:", $"{GetResourceLine(player, ResourceType.Rations)}" };
 			foreach (var itemSlot in (ItemSlot[])Enum.GetValues(typeof(ItemSlot))) GetItemLines(ref equipmentLines, player.GetInventoryItemFromSlot(itemSlot), itemSlot);
 			CombineTwoLists(characterLines, equipmentLines, Defines.COMPARISON_SHEET_WIDTH);
-			Console.WriteLine($"{Defines.FillTextToSize("|", Defines.COMPARISON_SHEET_WIDTH, "_")} {Defines.FillTextToSize("|", Defines.COMPARISON_SHEET_WIDTH, "_")}\n");
+			Console.WriteLine($"{Underline} {Underline}\n");
 		}
 		public void DrawRoomItemComparison(Item roomItem, Item item)
 		{
@@ -200,27 +203,29 @@ namespace MiniRPG_CS
 			List<string> roomItemLines = new List<string>(), playerItemLines = new List<string>();
 			GetItemLines(ref roomItemLines, roomItem, roomItem.Slot);
 			if (item != null) GetItemLines(ref playerItemLines, item, item.Slot);
-			CombineTwoLists(roomItemLines, playerItemLines, Defines.COMPARISON_SHEET_WIDTH);
-			Console.WriteLine($"{Defines.FillTextToSize("|", Defines.COMPARISON_SHEET_WIDTH, "_")} {Defines.FillTextToSize("|", Defines.COMPARISON_SHEET_WIDTH, "_")}\n");
+			Console.WriteLine($"{Defines.FillTextToSize("| Player Item", Defines.COMPARISON_SHEET_WIDTH, " ")} | Room Item");
+			CombineTwoLists(playerItemLines, roomItemLines,  Defines.COMPARISON_SHEET_WIDTH);
+			Console.WriteLine($"{Underline} {Underline}\n");
 		}
-		public void DrawLeveledUpText() => Console.WriteLine($"{Game.Instance.Player.CharacterName} has leveled up to level {Game.Instance.Level} and has {Game.Instance.Player.Resource(ResourceType.AbilityPoints).Current} unused ability points!\n");
-		public string GetResourceLine(Actor actor, ResourceType resourceType, bool willShowCurrent = true, bool willShowMax = false) => $"{Defines.AddSpacesBeforeCapitals(resourceType.ToString())}: {(willShowCurrent ? actor.Resource((int)resourceType).Current : string.Empty)}{(willShowCurrent && willShowMax ? "/" : string.Empty)}{(willShowMax ? actor.Resource((int)resourceType).MaxWithBonuses : string.Empty)}{(Defines.Resources[(int)resourceType].IsPercentage ? "%" : string.Empty)}";
+		public void DrawLeveledUpText() => Console.WriteLine($"| {Game.Instance.Player.CharacterName} has leveled up to level {Game.Instance.Level}.\n| They have {Game.Instance.Player.Resource(ResourceType.AbilityPoints).Current} unused ability points!\n{Underline}\n");
+		public string GetResourceLine(Actor actor, ResourceType resourceType, bool willShowCurrent = true, bool willShowMax = false) => $" {Defines.AddSpacesBeforeCapitals(resourceType.ToString())}: {(willShowCurrent ? actor.Resource((int)resourceType).Current : string.Empty)}{(willShowCurrent && willShowMax ? "/" : string.Empty)}{(willShowMax ? actor.Resource((int)resourceType).MaxWithBonuses : string.Empty)}{(Defines.Resources[(int)resourceType].IsPercentage ? "%" : string.Empty)}";
 		public string GetItemLine(Item item, ResourceType resourceType) => $"{Defines.AddSpacesBeforeCapitals(resourceType.ToString())}: +{item.Resource(resourceType).MaxWithBonuses}{(Defines.Resources[(int)resourceType].IsPercentage ? "%" : string.Empty)}";
+		public string GetAbilityBonusLine(int abilityIndex, int bonsuIndex) => $"| +{Defines.AbilityBonuses[abilityIndex][bonsuIndex].Max} {Defines.AddSpacesBeforeCapitals(Defines.AbilityBonuses[abilityIndex][bonsuIndex].ResourceType.ToString())}";
 
 		private void CombineTwoLists(List<string> list1, List<string> list2, int text1Width) { for (var index = 0; index < (int)MathF.Max(list1.Count, list2.Count); index++) DrawSheetLine($"{(list1.Count > index ? list1[index] : string.Empty)}", $"{(list2.Count > index ? list2[index] : string.Empty)}", index > 0 ? "|" : string.Empty, text1Width); }
 		private void DrawSheetLine(string text1, string text2, string separator, int text1Width) => Console.WriteLine($"|{Defines.FillTextToSize(text1, text1Width)}{separator}{text2}");
 		private void ShowOptions(string[] options)
 		{
 			for (var index = 0; index < options.Length; index++) Console.WriteLine($"| {index}. {options[index]}");
-			Console.WriteLine($"{Defines.FillTextToSize("|", Defines.COMPARISON_SHEET_WIDTH, "_")}\nType your option's index and press Enter:");
+			Console.WriteLine($"{Underline}\nType your option's index and press Enter:");
 		}
 		private void GetItemLines(ref List<string> equipmentLines, Item item, ItemSlot itemSlot)
 		{
-			equipmentLines.AddRange(new[] { string.Empty, $"___{itemSlot}:", $"Name: {(item == null ? "None Equipped" : item.ItemConfig.ItemName)}" });
+			equipmentLines.AddRange(new[] { string.Empty, $"___{itemSlot}: {(item == null ? "None Equipped" : item.ItemConfig.ItemName)}" });
 			if (item == null) return;
-			if (item.ItemConfig.Slot == ItemSlot.Weapon) equipmentLines.AddRange(new[] { $"{GetItemLine(item, ResourceType.Damage)}", $"{GetItemLine(item, ResourceType.Attacks)}", $"{GetItemLine(item, ResourceType.CriticalChance)}" });
-			if (item.ItemConfig.Slot == ItemSlot.Armor) equipmentLines.AddRange(new[] { $"{GetItemLine(item, ResourceType.Armor)}", $"{GetItemLine(item, ResourceType.Evades)}" });
-			if (item.ItemConfig.Slot == ItemSlot.Consumable) equipmentLines.Add($"Effect: +{item.GetConsumableResource().MaxWithBonuses} {item.GetConsumableResource().ResourceType}");
+			if (item.ItemConfig.Slot == ItemSlot.Weapon) equipmentLines.AddRange(new[] { $" {GetItemLine(item, ResourceType.Damage)}", $" {GetItemLine(item, ResourceType.Attacks)}", $" {GetItemLine(item, ResourceType.CriticalChance)}" });
+			if (item.ItemConfig.Slot == ItemSlot.Armor) equipmentLines.AddRange(new[] { $" {GetItemLine(item, ResourceType.Armor)}", $" {GetItemLine(item, ResourceType.Evades)}" });
+			if (item.ItemConfig.Slot == ItemSlot.Consumable) equipmentLines.Add($" Effect: +{item.GetConsumableResource().MaxWithBonuses} {item.GetConsumableResource().ResourceType}");
 			else
 			{
 				if (item.GetResourcesWithBonuses().Length > 0) equipmentLines.Add("___Bonuses:");
@@ -244,25 +249,26 @@ namespace MiniRPG_CS
 
 	public abstract class State
 	{
-		protected IOParser InputParser;
 		public Action<StateType> OnChangeState;
+		public abstract StateType StateTypeId { get; }
 
+		protected IOUtility IOUtility;
 		protected abstract string[] BaseOptions { get; }
 		protected abstract Action[] BaseActions { get; }
 
-		public void Initialize(IOParser inputParser)
+		public void Initialize(IOUtility ioUtility)
 		{
-			InputParser = inputParser;
-			ShowStateName();
+			IOUtility = ioUtility;
 			StateMain();
 		}
-		public abstract StateType StateTypeId { get; }
 
 		protected abstract void StateMain();
 		protected void ShowStateName() { Console.Clear(); Console.WriteLine($">----<{Defines.AddSpacesBeforeCapitals(StateTypeId.ToString())}>\n\n"); }
-		protected void ShowTextAndReset(string text, StateType stateType = StateType.None, Action onStateShown = null)
+		protected void ShowTextAndReset(string[] texts, StateType stateType = StateType.None, Action onStateShown = null)
 		{
-			ShowStateName(); onStateShown?.Invoke(); Console.WriteLine(text + "\nPress enter to continue."); Console.ReadLine();
+			ShowStateName(); onStateShown?.Invoke();
+			foreach (var text in texts) Console.WriteLine($"| {text}");
+			Console.WriteLine($"{IOUtility.Underline}\n{IOUtility.Continue}"); Console.ReadLine();
 			OnChangeState?.Invoke(stateType == StateType.None ? StateTypeId : stateType);
 		}
 	}
@@ -278,7 +284,7 @@ namespace MiniRPG_CS
 			Game.Instance.Map = null;
 			Game.Instance.Player = null;
 			Game.Instance.Opponent = null;
-			InputParser.ProcessValidInput(ShowStateName, BaseOptions, BaseActions);
+			IOUtility.ProcessValidInput(ShowStateName, BaseOptions, BaseActions);
 		}
 	}
 
@@ -291,12 +297,12 @@ namespace MiniRPG_CS
 
 		protected override void StateMain()
 		{
-			InputParser.ProcessValidName(ref characterName, ShowStateName);
+			IOUtility.ProcessValidName(ref characterName, ShowStateName);
 			(Game.Instance.Player = new Player(characterName)).AddItems();
-			InputParser.ProcessValidInput(() =>
+			IOUtility.ProcessValidInput(() =>
 			{
 				ShowStateName();
-				Console.WriteLine($"Create character named: {characterName}?\n");
+				Console.WriteLine($"| Create character named: {characterName}?\n{IOUtility.Underline}\n");
 			}, BaseOptions, BaseActions);
 		}
 	}
@@ -318,24 +324,24 @@ namespace MiniRPG_CS
 		protected override void StateMain()
 		{
 			if (Game.Instance.Map == null || (Game.Instance.Map != null && Game.Instance.PlayerRoom.RoomType == RoomType.Staircase)) Game.Instance.Map = new Map(Game.Instance.Level + 20);
-			InputParser.ProcessValidInput(() =>
+			IOUtility.ProcessValidInput(() =>
 			{
 				ShowStateName();
 				Game.Instance.Map.DrawMap();
-				if (Game.Instance.Player.HasJustLeveledUp) InputParser.DrawLeveledUpText();
-				Console.WriteLine($"|{Defines.FillTextToSize("", (int)MathF.Ceiling((Defines.COMPARISON_SHEET_WIDTH - $"Name: {Game.Instance.Player.CharacterName}".Length) * 0.5f), " ")}Name: {Game.Instance.Player.CharacterName}\n|{InputParser.GetResourceLine(Game.Instance.Player, ResourceType.Health, true, true)}\n|{InputParser.GetResourceLine(Game.Instance.Player, ResourceType.Rations)}\n{Defines.FillTextToSize("|", Defines.COMPARISON_SHEET_WIDTH, "_")}\n");
+				if (Game.Instance.Player.HasJustLeveledUp) IOUtility.DrawLeveledUpText();
+				Console.WriteLine($"|{Defines.FillTextToSize("", (int)MathF.Ceiling((Defines.COMPARISON_SHEET_WIDTH - $"Name: {Game.Instance.Player.CharacterName}".Length) * 0.5f), " ")}Name: {Game.Instance.Player.CharacterName}\n|{IOUtility.GetResourceLine(Game.Instance.Player, ResourceType.Health, true, true)}\n|{IOUtility.GetResourceLine(Game.Instance.Player, ResourceType.Rations)}\n{IOUtility.Underline}\n");
 			}, BaseOptions, BaseActions);
 		}
 
 		private void MovePlayer(Vec2Int direction)
 		{
 			if (Game.Instance.Map.MovePlayer(direction) && WillHeal().HasValue) OnChangeState?.Invoke(StateType.Room);
-			ShowTextAndReset("Can't go that way! Press enter to return to Map.");
+			ShowTextAndReset(new[] { "Can't go that way!" });
 		}
 		private void Rest()
 		{
-			if (!WillHeal(2f).Value) ShowTextAndReset($"Not enough {ResourceType.Rations} to rest! Press enter to return to Map.");
-			ShowTextAndReset("You find a safe spot and rest for a few hours. You feel much better now! Press enter to return to Map.");
+			if (!WillHeal(2f).Value) ShowTextAndReset(new[] { $"Not enough {ResourceType.Rations} to rest!" });
+			ShowTextAndReset(new[] { "You find a safe spot and take a nap.", "You feel much better when you wake up!" });
 		}
 		private bool? WillHeal(float healMod = 1f)
 		{
@@ -349,15 +355,15 @@ namespace MiniRPG_CS
 	public class CharacterSheetState : State
 	{
 		public override StateType StateTypeId => StateType.CharacterSheet;
-		protected override string[] BaseOptions => new string[] { $"{ResourceType.Strength} + 1", $"{ResourceType.Dexterity} + 1", $"{ResourceType.Vitality} + 1", "Use Consumable", "Back" };
+		protected override string[] BaseOptions => new string[] { $"{ResourceType.Strength} +1", $"{ResourceType.Dexterity} +1", $"{ResourceType.Vitality} +1", "Use Consumable", "Back" };
 		protected override Action[] BaseActions => new Action[] { () => AddAbility(ResourceType.Strength), () => AddAbility(ResourceType.Dexterity), () => AddAbility(ResourceType.Vitality), UseConsumable, () => OnChangeState?.Invoke(MiniRPGStateMachine.PreviousState.StateTypeId) };
 
 		protected override void StateMain()
 		{
-			InputParser.ProcessValidInput(() =>
+			IOUtility.ProcessValidInput(() =>
 			{
 				ShowStateName();
-				InputParser.DrawCharacterSheet();
+				IOUtility.DrawCharacterSheet();
 			}, BaseOptions, BaseActions);
 			Game.Instance.Player.ResetLeveledUpFlag();
 		}
@@ -365,26 +371,27 @@ namespace MiniRPG_CS
 		private void AddAbility(ResourceType resourceType)
 		{
 			ShowStateName();
-			var abilityPoints = Game.Instance.Player.Resource(ResourceType.AbilityPoints);
-			if (abilityPoints.Current <= 0) ShowTextAndReset("No available ability points!");
-			if (abilityPoints.Current == abilityPoints.Max) ShowTextAndReset($"{resourceType} already at max!");
-			var abilityText = $"{resourceType} Bonuses per point:\n";
-			foreach (var bonus in Defines.AbilityBonusesPerPoint[(int)resourceType - (int)ResourceType.Strength]) abilityText += $"+{bonus.Max} {Defines.AddSpacesBeforeCapitals(bonus.ResourceType.ToString())}\n";
-			Console.WriteLine($"{abilityText}\nType 'y' to increase {resourceType} by 1\nType 'n' to cancel.");
+			var player = Game.Instance.Player;
+			if (player.Resource(ResourceType.AbilityPoints).Current <= 0) ShowTextAndReset(new[] { "No available ability points!" });
+			if (player.Resource(resourceType).Current >= player.Resource(resourceType).MaxWithBonuses) ShowTextAndReset(new[] { $"{resourceType} already at max!" });
+			var abilityText = $"| {resourceType} bonuses per point:\n";
+			var abilityIndex = (int)resourceType - (int)ResourceType.Strength;
+			for (var index = 0; index < Defines.AbilityBonuses[abilityIndex].Length; index++) abilityText += $"{IOUtility.GetAbilityBonusLine(abilityIndex, index)} {(Defines.AbilityBonuses[abilityIndex].Length - 1 > index ? "\n" : string.Empty)}";
+			Console.WriteLine($"{abilityText}\n{IOUtility.Underline}\nType 'y' to confirm. Type 'n' to cancel.\n");
 			var input = Console.ReadLine();
-			while (input != "y" && input != "n") Console.WriteLine(abilityText + (input = Console.ReadLine()));
+			while (input != "y" && input != "n") { Console.Clear(); Console.WriteLine(abilityText + (input = Console.ReadLine())); }
 			if (input == "n") OnChangeState?.Invoke(StateTypeId);
-			abilityPoints.AddCurrent(-1);
-			Game.Instance.Player.AddAbility(resourceType);
+			player.AddAbility(resourceType);
+			player.Resource(ResourceType.AbilityPoints).AddCurrent(-1);
 			OnChangeState?.Invoke(StateTypeId);
 		}
 		private void UseConsumable()
 		{
-			if (!Game.Instance.Player.UseConsumable()) return;
+			if (!Game.Instance.Player.UseConsumable()) OnChangeState?.Invoke(StateTypeId);
 			var item = Game.Instance.Player.GetInventoryItemFromSlot(ItemSlot.Consumable);
 			Game.Instance.Player.RemoveInventoryItem(ItemSlot.Consumable);
 			var itemResource = item.GetConsumableResource();
-			ShowTextAndReset($"Used {item.ItemConfig.ItemName} to {(itemResource.MaxWithBonuses > float.Epsilon ? "increase" : "damage")} {itemResource.ResourceType} by {itemResource.MaxWithBonuses}.");
+			ShowTextAndReset(new[] { $"Used {item.ItemConfig.ItemName} to {(itemResource.MaxWithBonuses > float.Epsilon ? "increase" : "damage")} {itemResource.ResourceType} by {itemResource.MaxWithBonuses}." });
 		}
 	}
 
@@ -396,27 +403,27 @@ namespace MiniRPG_CS
 
 		protected override void StateMain()
 		{
-			if (Game.Instance.PlayerRoom.RoomType == RoomType.Staircase) ShowTextAndReset("You stumble into a room with a dusty staircase going down into the darkness.\nAll of a sudden, a strange whim compels you to begin climbing down.\nAs soon as you touch the final step, the staircase crumbles behind you.\nYou are now stranded on this level of the dungeon.\nWith nothing else to do and no way back, you press on.\n", StateType.Map);
+			if (Game.Instance.PlayerRoom.RoomType == RoomType.Staircase) ShowTextAndReset(new[] { "You stumble into a room with a dusty staircase going down into the darkness.", "All of a sudden, a strange whim compels you to begin climbing down.", "As soon as you touch the final step, the staircase crumbles behind you.", "You are now stranded on this level of the dungeon.", "With no other options and no way back, you press on." }, StateType.Map);
 			if (Game.Instance.PlayerRoom.RoomType == RoomType.Fight && Game.Instance.PlayerRoom.RoomStatus != RoomStatus.Explored) OnChangeState?.Invoke(StateType.Fight);
 			Game.Instance.PlayerRoom.UpdateStatus(RoomStatus.Explored);
 			Game.Instance.Opponent = null;
-			InputParser.ProcessValidInput(() =>
+			IOUtility.ProcessValidInput(() =>
 			{
 				ShowStateName();
-				if (Game.Instance.PlayerRoom.Item == null) Console.WriteLine("Room has no item.\n");
-				else InputParser.DrawRoomItemComparison(Game.Instance.PlayerRoom.Item, Game.Instance.Player.GetInventoryItemFromSlot(Game.Instance.PlayerRoom.Item.ItemConfig.Slot));
-				if (Game.Instance.Player.HasJustLeveledUp) InputParser.DrawLeveledUpText();
+				if (Game.Instance.PlayerRoom.Item == null) Console.WriteLine($"| This room has no item.\n{IOUtility.Underline}\n");
+				else IOUtility.DrawRoomItemComparison(Game.Instance.PlayerRoom.Item, Game.Instance.Player.GetInventoryItemFromSlot(Game.Instance.PlayerRoom.Item.ItemConfig.Slot));
+				if (Game.Instance.Player.HasJustLeveledUp) IOUtility.DrawLeveledUpText();
 			}, BaseOptions, BaseActions);
 		}
 
 		private void SwapItem()
 		{
-			if (Game.Instance.PlayerRoom.Item == null) ShowTextAndReset("Room has no item.");
+			if (Game.Instance.PlayerRoom.Item == null) ShowTextAndReset(new[] { "This room has no item." });
 			var roomItem = Game.Instance.PlayerRoom.Item;
 			var playerItem = Game.Instance.Player.GetInventoryItemFromSlot(roomItem.Slot);
 			Game.Instance.Player.SetInventoryItemInSlot(roomItem);
 			Game.Instance.PlayerRoom.ReplaceItem(playerItem);
-			ShowTextAndReset($"{(playerItem != null ? $"{playerItem.ItemConfig.ItemName}" : "Nothing")} dropped. {roomItem.ItemConfig.ItemName} equipped.");
+			ShowTextAndReset(new[] { $"{(playerItem != null ? $"{playerItem.ItemConfig.ItemName}" : "Nothing")} dropped.", $"{roomItem.ItemConfig.ItemName} equipped." });
 		}
 	}
 
@@ -443,7 +450,7 @@ namespace MiniRPG_CS
 
 		private void DrawCombat(bool isFirstTurn = false)
 		{
-			InputParser.ProcessValidInput(() =>
+			IOUtility.ProcessValidInput(() =>
 			{
 				ShowStateName();
 				if (isFirstTurn && IsAmbush()) AI();
@@ -460,8 +467,8 @@ namespace MiniRPG_CS
 			for (var actorIndex = 0; actorIndex < actors.Length; actorIndex++)
 			{
 				var actorAttacks = attackLists[actorIndex];
-				if (actorIndex > playerIndex && attackLists[playerIndex].Count == 0) Console.WriteLine($"| A sneaky {actors[opponentIndex].CharacterName} ambushed you!");
-				Console.WriteLine($"{Defines.FillTextToSize("|", (int)MathF.Round((Defines.COMPARISON_SHEET_WIDTH - actors[actorIndex].CharacterName.Length) * 0.5f), " ")}{actors[actorIndex].CharacterName}\n|{InputParser.GetResourceLine(actors[actorIndex], ResourceType.Health, true, true)}");
+				if (actorIndex > playerIndex && attackLists[playerIndex].Count == 0) Console.WriteLine($"| A sneaky {actors[opponentIndex].CharacterName} ambushed you!\n|");
+				Console.WriteLine($"{Defines.FillTextToSize("|", (int)MathF.Round((Defines.COMPARISON_SHEET_WIDTH - actors[actorIndex].CharacterName.Length) * 0.5f), " ")}{actors[actorIndex].CharacterName}\n|{IOUtility.GetResourceLine(actors[actorIndex], ResourceType.Health, true, true)}");
 				if (actorAttacks.Count != 0)
 				{
 					for (var index = 0; index < actorAttacks.Count; index++)
@@ -474,7 +481,7 @@ namespace MiniRPG_CS
 						else Console.WriteLine($"|>Used {(actorAttacks.Count > 1 ? "Light" : "Heavy")} Attack. It {(actorAttacks[index] < 0 ? "was evaded" : (actorAttacks[index] == 0 ? "missed" : $"hit dealing {actorAttacks[index]} damage"))}.");
 					}
 				}
-				Console.WriteLine($"{Defines.FillTextToSize("|", Defines.COMPARISON_SHEET_WIDTH, "_")}\n");
+				Console.WriteLine($"{IOUtility.Underline}\n");
 			}
 		}
 		private void AI()
@@ -483,7 +490,7 @@ namespace MiniRPG_CS
 			var actor = actors[opponentIndex];
 			var chance = new Random().Next(0, 100);
 			var health = actors[opponentIndex].Resource(ResourceType.Health);
-			if (chance + (int)((1f - (health.Current / (float)health.MaxWithBonuses)) * 100f) > 120) 
+			if (chance + (int)((1f - (health.Current / (float)health.MaxWithBonuses)) * 100f) > 120)
 			{
 				var consumable = actor.GetInventoryItemFromSlot(ItemSlot.Consumable);
 				if (consumable != null && (consumable.GetConsumableResource().ResourceType == ResourceType.Health)) UseConsumable(actor, actors[playerIndex]);
@@ -547,11 +554,11 @@ namespace MiniRPG_CS
 		private bool IsActorDead(Actor actor) => actor.Resource(ResourceType.Health).Current < float.Epsilon;
 		private void Won(int experience = 1)
 		{
-			actors[playerIndex].GiveExperience(experience);
+			actors[playerIndex].GiveExperience(Defines.DEBUG_XP_FOR_WIN != 0 ? Defines.DEBUG_XP_FOR_WIN : experience);
 			Game.Instance.PlayerRoom.UpdateStatus(RoomStatus.Explored);
-			ShowTextAndReset($"{actors[playerIndex].CharacterName} was victorious!\nThey gained {experience} expirence point!", StateType.Room, DrawTurns);
+			ShowTextAndReset(new[] { $"{actors[playerIndex].CharacterName} was victorious!", $"They gained {experience} expirence point!" }, StateType.Room, DrawTurns);
 		}
-		private void Lost() => ShowTextAndReset($"{actors[playerIndex].CharacterName} was slain by a vicious {Defines.AddSpacesBeforeCapitals(actors[opponentIndex].CharacterName)}!\nThey achieved level {actors[playerIndex].Level} before perishing.\nHow tragic!\n", StateType.MainMenu, DrawTurns);
+		private void Lost() => ShowTextAndReset(new[] { $"{actors[playerIndex].CharacterName} was slain by a vicious {Defines.AddSpacesBeforeCapitals(actors[opponentIndex].CharacterName)}!", $"They achieved level {actors[playerIndex].Level} before perishing.", $"How tragic!" }, StateType.MainMenu, DrawTurns);
 		private string GetAttackString(string moveName, Actor actor, int times, float damagePercentage, float toHitMod) => $"{moveName}({MathF.Min(toHitMod * actor.Resource(ResourceType.ChanceToHit).MaxWithBonuses, 95f)}% to hit, {times}x{(int)MathF.Round(actor.Resource(ResourceType.Damage).MaxWithBonuses * damagePercentage)} damage)";
 	}
 
@@ -626,7 +633,7 @@ namespace MiniRPG_CS
 		public void AddAbility(ResourceType ability, bool willAddPoint = true, int amount = 1)
 		{
 			if (willAddPoint) Resource((int)ability).AddCurrent(amount);
-			foreach (var bonus in Defines.AbilityBonusesPerPoint[(int)ability - (int)ResourceType.Strength]) Resource((int)bonus.ResourceType).UpdateMaxBonus(CharacterName.GetHashCode(), Resource((int)ability).Current * bonus.Max);
+			foreach (var bonus in Defines.AbilityBonuses[(int)ability - (int)ResourceType.Strength]) Resource((int)bonus.ResourceType).UpdateMaxBonus(CharacterName.GetHashCode(), Resource((int)ability).Current * bonus.Max);
 		}
 		public Resource Resource(ResourceType resourceType) => Resource((int)resourceType);
 		public Resource Resource(int index) => resources[index];

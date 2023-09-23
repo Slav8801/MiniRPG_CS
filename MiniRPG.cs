@@ -796,7 +796,7 @@ namespace MiniRPG_CS
 					for (var directionIndex = 0; directionIndex < directions.Length; directionIndex++)
 					{
 						var pos = GetStartingRoom() + directions[directionIndex];
-						if (pos.X >= 0 && pos.X < width && pos.Y >= 0 && pos.Y < height && GetRoom(pos) == null)
+						if (IsVoid(pos))
 						{
 							var roomType = Defines.DEBUG_ALL_ROOMS == RoomType.None ? (RoomType)(new Random().Next(1, (Enum.GetValues(typeof(RoomType))).Length - 1)) : Defines.DEBUG_ALL_ROOMS;
 							rooms.Add(new Room(pos, roomType, (roomType != RoomType.Empty ? new Item(null, true) : null), RoomStatus.Hidden));
@@ -837,14 +837,11 @@ namespace MiniRPG_CS
 
 		private Vec2Int GetStartingRoom()
 		{
-			for (var roomIndex = 0; roomIndex < rooms.Count; roomIndex++)
+			foreach (var room in rooms)
 			{
 				var counter = 0;
 				for (var directionIndex = 0; directionIndex < directions.Length; directionIndex++)
-				{
-					var pos = rooms[roomIndex].Position + directions[directionIndex];
-					if (pos.X >= 0 && pos.X < width && pos.Y >= 0 && pos.Y < height && GetRoom(pos) == null) if (++counter > 1) return rooms[roomIndex].Position;
-				}
+					if (IsVoid(room.Position + directions[directionIndex])) if (++counter > 1) return room.Position;
 			}
 			return PlayerPosition;
 		}
@@ -854,12 +851,10 @@ namespace MiniRPG_CS
 			{
 				var counter = 0;
 				for (var directionIndex = 0; directionIndex < directions.Length; directionIndex++)
-				{
-					var pos = rooms[roomIndex].Position + directions[directionIndex];
-					if (pos.X >= 0 && pos.X < width && pos.Y >= 0 && pos.Y < height && GetRoom(pos) == null) if (++counter > 2 && roomIndex > (int)(rooms.Count * 0.5f)) { rooms[roomIndex].SetStaircase(); return; }
-				}
+					if (IsVoid(rooms[roomIndex].Position + directions[directionIndex]) && ++counter > 2 && roomIndex > (int)(rooms.Count * 0.5f)) { rooms[roomIndex].SetStaircase(); return; }
 			}
 		}
+		private bool IsVoid(Vec2Int pos) => pos.X >= 0 && pos.X < width && pos.Y >= 0 && pos.Y < height && GetRoom(pos) == null;
 	}
 }
 

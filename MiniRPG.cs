@@ -260,9 +260,9 @@ namespace MiniRPG_CS
 
 		protected abstract void StateMain();
 		protected void ShowStateName() { Console.Clear(); Console.WriteLine($">----<{Defines.AddSpacesBeforeCapitals(StateTypeId.ToString())}>\n\n"); }
-		protected void ShowTextAndReset(string text, StateType stateType = StateType.None)
+		protected void ShowTextAndReset(string text, StateType stateType = StateType.None, Action onStateShown = null)
 		{
-			ShowStateName(); Console.WriteLine(text + "\nPress enter to continue."); Console.ReadLine();
+			ShowStateName(); onStateShown?.Invoke(); Console.WriteLine(text + "\nPress enter to continue."); Console.ReadLine();
 			OnChangeState?.Invoke(stateType == StateType.None ? StateTypeId : stateType);
 		}
 	}
@@ -480,8 +480,18 @@ namespace MiniRPG_CS
 		private void AI()
 		{
 			turns++;
-			if (actors[opponentIndex].Resource(ResourceType.Strength).MaxWithBonuses > actors[opponentIndex].Resource(ResourceType.Dexterity).MaxWithBonuses) LightAttack(actors[opponentIndex], actors[playerIndex]);
-			else HeavyAttack(actors[opponentIndex], actors[playerIndex]);
+			var actor = actors[opponentIndex];
+			var chance = new Random().Next(0, 100);
+			var health = actors[opponentIndex].Resource(ResourceType.Health);
+			if (chance + (int)((1f - (health.Current / (float)health.MaxWithBonuses)) * 100f) > 120) 
+			{
+				var consumable = actor.GetInventoryItemFromSlot(ItemSlot.Consumable);
+				if (consumable != null && (consumable.GetConsumableResource().ResourceType == ResourceType.Health)) UseConsumable(actor, actors[playerIndex]);
+			}
+			var lightChance = chance + (int)actor.Resource(ResourceType.Dexterity).Current;
+			var heavyChance = (100 - chance) + (int)actor.Resource(ResourceType.Strength).Current;
+			if (lightChance > heavyChance) LightAttack(actor, actors[playerIndex]);
+			else HeavyAttack(actor, actors[playerIndex]);
 		}
 		private void LightAttack(Actor attacker, Actor defender) => Attack(attacker, defender, (int)attacker.Resource(ResourceType.Attacks).MaxWithBonuses, 0.3f);
 		private void HeavyAttack(Actor attacker, Actor defender) => Attack(attacker, defender, 1, 1f, 1.5f);
@@ -503,7 +513,7 @@ namespace MiniRPG_CS
 			attackLists[turns] = new List<int>();
 			var itemIndex = 0; Defines.GetItemIndexWithName(attacker.GetInventoryItemFromSlot(ItemSlot.Consumable).ItemConfig.ItemName, ref itemIndex);
 			attackLists[turns].Add(10000 + itemIndex);
-			if (attacker.UseConsumable()) Game.Instance.Player.RemoveInventoryItem(ItemSlot.Consumable);
+			if (attacker.UseConsumable()) attacker.RemoveInventoryItem(ItemSlot.Consumable);
 			if (turns > 0) DrawCombat();
 			else AI();
 		}
@@ -539,9 +549,9 @@ namespace MiniRPG_CS
 		{
 			actors[playerIndex].GiveExperience(experience);
 			Game.Instance.PlayerRoom.UpdateStatus(RoomStatus.Explored);
-			ShowTextAndReset($"{actors[playerIndex].CharacterName} was victorious!\nThey gained {experience} expirence point!", StateType.Room);
+			ShowTextAndReset($"{actors[playerIndex].CharacterName} was victorious!\nThey gained {experience} expirence point!", StateType.Room, DrawTurns);
 		}
-		private void Lost() => ShowTextAndReset($"{actors[playerIndex].CharacterName} was slain by a vicious {Defines.AddSpacesBeforeCapitals(actors[opponentIndex].CharacterName)}!\nThey achieved level {actors[playerIndex].Level} before perishing.\nHow tragic!\n", StateType.MainMenu);
+		private void Lost() => ShowTextAndReset($"{actors[playerIndex].CharacterName} was slain by a vicious {Defines.AddSpacesBeforeCapitals(actors[opponentIndex].CharacterName)}!\nThey achieved level {actors[playerIndex].Level} before perishing.\nHow tragic!\n", StateType.MainMenu, DrawTurns);
 		private string GetAttackString(string moveName, Actor actor, int times, float damagePercentage, float toHitMod) => $"{moveName}({MathF.Min(toHitMod * actor.Resource(ResourceType.ChanceToHit).MaxWithBonuses, 95f)}% to hit, {times}x{(int)MathF.Round(actor.Resource(ResourceType.Damage).MaxWithBonuses * damagePercentage)} damage)";
 	}
 
@@ -839,7 +849,6 @@ namespace MiniRPG_CS
 
 /// <summary>
 /// TODO:
-/// - Opponent ai
 /// - add opponent auto level up
 /// - NPC Specific Equipment (items only used by enemies)
 /// </summary>

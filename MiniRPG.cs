@@ -10,9 +10,11 @@ namespace MiniRPG_CS
 		public const int COMPARISON_SHEET_WIDTH = 36;
 		public const float LIGHT_ATTACK_DAMAGE_MOD = 0.45f;
 		public const float HEAVY_ATTACK_TO_HIT_MOD = 1.6f;
-		public const int DEBUG_XP_FOR_WIN = 1;
-		public const RoomType DEBUG_ALL_ROOMS = RoomType.Fight;
-		public const bool DEBUG_ALWAYS_AMBUSH = true;
+		public const float NPC_DAMAGE_NERF = 0.1f;
+		public const int NPC_HEAL_THRESHOLD  = 140;
+		public const int DEBUG_XP_FOR_WIN = 0;
+		public const RoomType DEBUG_ALL_ROOMS = RoomType.None;
+		public const bool DEBUG_ALWAYS_AMBUSH = false;
 		public static List<ResourceConfig> Resources => new List<ResourceConfig>
 		{
 			new ResourceConfig(ResourceType.None, 0f, 0f),
@@ -33,15 +35,21 @@ namespace MiniRPG_CS
 			new ResourceConfig(ResourceType.Level, 100f, 100f, 1f),
 			new ResourceConfig(ResourceType.Initiative, 0f, 10000f, 0f, 0.2f, true),
 			new ResourceConfig(ResourceType.HealthRegeneration, 0f, 150f, 999f, 0.2f, true),
-			new ResourceConfig(ResourceType.Rations, 100f, 100f, 30f),
+			new ResourceConfig(ResourceType.Rations, 200f, 200f, 45f),
 		};
-		public static List<ResourceConfig[]> AbilityBonuses => new List<ResourceConfig[]>
+		public static List<ResourceConfig[]> PlayerAbilityBonuses => new List<ResourceConfig[]>
 		{
 			new[] {new ResourceConfig(ResourceType.Damage, 1f), new ResourceConfig(ResourceType.Armor, 0.5f), },
 			new[] {new ResourceConfig(ResourceType.ChanceToHit, 0.5f), new ResourceConfig(ResourceType.ChanceToEvade, 1f), new ResourceConfig(ResourceType.Initiative, 0.5f), },
-			new[] {new ResourceConfig(ResourceType.Health, 5f), new ResourceConfig(ResourceType.HealthRegeneration, 0.5f), },
+			new[] {new ResourceConfig(ResourceType.Health, 5f), new ResourceConfig(ResourceType.HealthRegeneration, 2f), },
 		};
-		public static int[] RandomItems => new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22 };
+		public static List<ResourceConfig[]> NPCAbilityBonuses => new List<ResourceConfig[]>
+		{
+			new[] {new ResourceConfig(ResourceType.Damage, 0.3f), new ResourceConfig(ResourceType.Armor, 0.3f), },
+			new[] {new ResourceConfig(ResourceType.ChanceToHit, 0.3f), new ResourceConfig(ResourceType.ChanceToEvade, 0.6f), new ResourceConfig(ResourceType.Initiative, 0.5f), },
+			new[] {new ResourceConfig(ResourceType.Health, 2f), new ResourceConfig(ResourceType.HealthRegeneration, 0f), },
+		};
+		public static int[] RandomItems => new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 22, 22, 23, 23, 23, 24, 24, 24, 25, 25, 26, 26 };
 		public static void GetItemIndexWithName(string name, ref int itemIndex) { for (var index = 0; index < Items.Count; index++) if (name.GetHashCode() == Items[index].ItemName.GetHashCode()) itemIndex = index; }
 		public static List<ItemConfig> Items => new List<ItemConfig>
 		{
@@ -63,31 +71,36 @@ namespace MiniRPG_CS
 			new ItemConfig(ItemSlot.Armor, "Chainmail", new ResourceConfig[] { new ResourceConfig( ResourceType.Armor, 110f), new ResourceConfig( ResourceType.Evades, 3f) }),
 			new ItemConfig(ItemSlot.Armor, "Warplate", new ResourceConfig[] { new ResourceConfig( ResourceType.Armor, 165f), new ResourceConfig( ResourceType.Evades, 2f) }),
 			new ItemConfig(ItemSlot.Armor, "Truthkeeper", new ResourceConfig[] { new ResourceConfig( ResourceType.Armor, 200f), new ResourceConfig( ResourceType.Evades, 1f) }),
-			//consumables - starts at 14 - rations at 18 - ends at 22
+			//consumables - starts at 14 - non-heal 18 - ends at 26
 			new ItemConfig(ItemSlot.Consumable, "Snakeweed Oil", new ResourceConfig[] { new ResourceConfig( ResourceType.Health, 150f) }),
 			new ItemConfig(ItemSlot.Consumable, "Snakeweed Elixir", new ResourceConfig[] { new ResourceConfig( ResourceType.Health, 300f) }),
 			new ItemConfig(ItemSlot.Consumable, "Energetic Crystal", new ResourceConfig[] { new ResourceConfig( ResourceType.Health, 600f) }),
 			new ItemConfig(ItemSlot.Consumable, "Azure Shard", new ResourceConfig[] { new ResourceConfig( ResourceType.Health, 1000f) }),
-			new ItemConfig(ItemSlot.Consumable, "Ration Pack", new ResourceConfig[] { new ResourceConfig( ResourceType.Rations, 10f) }),
-			new ItemConfig(ItemSlot.Consumable, "Grimoire", new ResourceConfig[] { new ResourceConfig( ResourceType.Experience, 8f) }),
 			new ItemConfig(ItemSlot.Consumable, "Yellow Mushroom", new ResourceConfig[] { new ResourceConfig( ResourceType.Strength, 1f) }),
 			new ItemConfig(ItemSlot.Consumable, "Blue Mushroom", new ResourceConfig[] { new ResourceConfig( ResourceType.Dexterity, 1f) }),
 			new ItemConfig(ItemSlot.Consumable, "Red Mushroom", new ResourceConfig[] { new ResourceConfig( ResourceType.Vitality, 1f) }),
+			new ItemConfig(ItemSlot.Consumable, "Grimoire", new ResourceConfig[] { new ResourceConfig( ResourceType.Experience, 8f) }),
+			new ItemConfig(ItemSlot.Consumable, "Mouldy Cheese", new ResourceConfig[] { new ResourceConfig( ResourceType.Rations, 5f) }),
+			new ItemConfig(ItemSlot.Consumable, "Small Rations Pack", new ResourceConfig[] { new ResourceConfig( ResourceType.Rations, 15f) }),
+			new ItemConfig(ItemSlot.Consumable, "Old Rucksack", new ResourceConfig[] { new ResourceConfig( ResourceType.Rations, 25f) }),
+			new ItemConfig(ItemSlot.Consumable, "Mercenary's Backpack", new ResourceConfig[] { new ResourceConfig( ResourceType.Rations, 35f) }),
+			new ItemConfig(ItemSlot.Consumable, "Heroes' Feast", new ResourceConfig[] { new ResourceConfig( ResourceType.Rations, 50f) }),
 		};
 		public static List<OpponentConfig> Opponents = new List<OpponentConfig>()
 		{
 			//dex - 0 to 2
-			new OpponentConfig("Drog", new[] {3, 10, 17}, new[] {5, 10, 0 }, ResourceType.Dexterity),
+			new OpponentConfig("Drog", new[] {3, 10, 18}, new[] {5, 10, 0 }, ResourceType.Dexterity),
 			new OpponentConfig("Ice Elemental", new[] {0, 9, 17}, new[] {0, 15, 0 }, ResourceType.Dexterity),
 			new OpponentConfig("Devourer Narakin", new[] {2, 11, 17}, new[] {0, 15, 0 }, ResourceType.Dexterity),
 			//str - 3 to 5
-			new OpponentConfig("Ca'el Militant", new[] {4, 11, 15}, new[] {10, 3, 2 }, ResourceType.Strength),
+			new OpponentConfig("Ca'el Conscript", new[] {4, 11, 14}, new[] {10, 3, 2 }, ResourceType.Strength),
 			new OpponentConfig("Fire Elemental", new[] {3, 10, 16}, new[] {7, 5, 3 }, ResourceType.Strength),
 			new OpponentConfig("Agressor Narakin", new[] {5, 12, 16}, new[] {12, 0, 3 }, ResourceType.Strength),
 			//vit - 6 to 8
-			new OpponentConfig("Trollog", new[] {7, 12, 15}, new[] {5, 0, 10 }, ResourceType.Vitality),
-			new OpponentConfig("Bloblin", new[] {5, 11, 16}, new[] {0, 5, 10 }, ResourceType.Vitality),
-			new OpponentConfig("Obsidian Geckin", new[] {2, 13, 16}, new[] {0, 0, 15 }, ResourceType.Vitality),
+			new OpponentConfig("Earth Elemental", new[] {8, 13, 16}, new[] {7, 0, 8 }, ResourceType.Vitality),
+			new OpponentConfig("Trollog", new[] {7, 12, 18}, new[] {5, 0, 10 }, ResourceType.Vitality),
+			new OpponentConfig("Bloblin", new[] {5, 11, 18}, new[] {0, 5, 10 }, ResourceType.Vitality),
+			new OpponentConfig("Obsidian Geckin", new[] {2, 13, 18}, new[] {0, 0, 15 }, ResourceType.Vitality),
 		};
 
 		public static int ExpToNextLevel(int currentLevel) => (int)MathF.Floor(currentLevel * 0.201f) + 1;
@@ -233,7 +246,7 @@ namespace MiniRPG_CS
 		public void DrawLeveledUpText() => Console.WriteLine($"| {Game.Instance.Player.CharacterName} has leveled up to level {Game.Instance.Level}.\n| They have {Game.Instance.Player.Resource(ResourceType.AbilityPoints).Current} unused ability points!\n{Underline}\n");
 		public string GetResourceLine(Actor actor, ResourceType resourceType, bool willShowCurrent = true, bool willShowMax = false) => $" {Defines.AddSpacesBeforeCapitals(resourceType.ToString())}: {(willShowCurrent ? actor.Resource((int)resourceType).Current : string.Empty)}{(willShowCurrent && willShowMax ? "/" : string.Empty)}{(willShowMax ? actor.Resource((int)resourceType).MaxWithBonuses : string.Empty)}{(Defines.Resources[(int)resourceType].IsPercentage ? "%" : string.Empty)}";
 		public string GetItemLine(Item item, ResourceType resourceType) => $"{Defines.AddSpacesBeforeCapitals(resourceType.ToString())}: +{item.Resource(resourceType).MaxWithBonuses}{(Defines.Resources[(int)resourceType].IsPercentage ? "%" : string.Empty)}";
-		public string GetAbilityBonusLine(int abilityIndex, int bonsuIndex) => $"| +{Defines.AbilityBonuses[abilityIndex][bonsuIndex].Max} {Defines.AddSpacesBeforeCapitals(Defines.AbilityBonuses[abilityIndex][bonsuIndex].ResourceType.ToString())}";
+		public string GetAbilityBonusLine(int abilityIndex, int bonsuIndex, List<ResourceConfig[]> resourceConfigs) => $"| +{resourceConfigs[abilityIndex][bonsuIndex].Max}{(Defines.Resources[(int)resourceConfigs[abilityIndex][bonsuIndex].ResourceType].IsPercentage ? "%" : string.Empty)} {Defines.AddSpacesBeforeCapitals(resourceConfigs[abilityIndex][bonsuIndex].ResourceType.ToString())}";
 
 		private void CombineTwoLists(List<string> list1, List<string> list2, int text1Width) { for (var index = 0; index < (int)MathF.Max(list1.Count, list2.Count); index++) DrawSheetLine($"{(list1.Count > index ? list1[index] : string.Empty)}", $"{(list2.Count > index ? list2[index] : string.Empty)}", "|", text1Width); }
 		private void DrawSheetLine(string text1, string text2, string separator, int text1Width) => Console.WriteLine($"|{Defines.FillTextToSize(text1, text1Width)}{separator}{text2}");
@@ -399,12 +412,12 @@ namespace MiniRPG_CS
 			if (player.Resource(resourceType).Current >= player.Resource(resourceType).MaxWithBonuses) ShowTextAndReset(new[] { $"{resourceType} already at max!" });
 			var abilityText = $"| {resourceType} bonuses per point:\n";
 			var abilityIndex = (int)resourceType - (int)ResourceType.Strength;
-			for (var index = 0; index < Defines.AbilityBonuses[abilityIndex].Length; index++) abilityText += $"{IOUtility.GetAbilityBonusLine(abilityIndex, index)} {(Defines.AbilityBonuses[abilityIndex].Length - 1 > index ? "\n" : string.Empty)}";
+			for (var index = 0; index < Defines.PlayerAbilityBonuses[abilityIndex].Length; index++) abilityText += $"{IOUtility.GetAbilityBonusLine(abilityIndex, index, Defines.PlayerAbilityBonuses)} {(Defines.PlayerAbilityBonuses[abilityIndex].Length - 1 > index ? "\n" : string.Empty)}";
 			Console.WriteLine($"{abilityText}\n{IOUtility.Underline}\nType 'y' to confirm. Type 'n' to cancel.\n");
 			var input = Console.ReadLine();
 			while (input != "y" && input != "n") { Console.Clear(); Console.WriteLine(abilityText + (input = Console.ReadLine())); }
 			if (input == "n") OnChangeState?.Invoke(StateTypeId);
-			player.AddAbility(resourceType);
+			player.AddAbilityBonuses(Defines.PlayerAbilityBonuses, resourceType);
 			player.Resource(ResourceType.AbilityPoints).AddCurrent(-1);
 			OnChangeState?.Invoke(StateTypeId);
 		}
@@ -515,18 +528,18 @@ namespace MiniRPG_CS
 			var actor = actors[opponentIndex];
 			var chance = new Random().Next(0, 100);
 			var health = actors[opponentIndex].Resource(ResourceType.Health);
-			if (chance + (int)((1f - (health.Current / (float)health.MaxWithBonuses)) * 100f) > 120)
+			if (chance + (int)((1f - (health.Current / (float)health.MaxWithBonuses)) * 100f) > Defines.NPC_HEAL_THRESHOLD)
 			{
 				var consumable = actor.GetInventoryItemFromSlot(ItemSlot.Consumable);
 				if (consumable != null && (consumable.GetConsumableResource().ResourceType == ResourceType.Health)) UseConsumable(actor, actors[playerIndex]);
 			}
 			var lightChance = chance + (int)actor.Resource(ResourceType.Dexterity).Current;
 			var heavyChance = (100 - chance) + (int)actor.Resource(ResourceType.Strength).Current;
-			if (lightChance > heavyChance) LightAttack(actor, actors[playerIndex]);
-			else HeavyAttack(actor, actors[playerIndex]);
+			if (lightChance > heavyChance) LightAttack(actor, actors[playerIndex], Defines.NPC_DAMAGE_NERF);
+			else HeavyAttack(actor, actors[playerIndex], Defines.NPC_DAMAGE_NERF);
 		}
-		private void LightAttack(Actor attacker, Actor defender) => Attack(attacker, defender, (int)attacker.Resource(ResourceType.Attacks).MaxWithBonuses, Defines.LIGHT_ATTACK_DAMAGE_MOD);
-		private void HeavyAttack(Actor attacker, Actor defender) => Attack(attacker, defender, 1, 1f, Defines.HEAVY_ATTACK_TO_HIT_MOD);
+		private void LightAttack(Actor attacker, Actor defender, float damageMod = 1f) => Attack(attacker, defender, (int)attacker.Resource(ResourceType.Attacks).MaxWithBonuses, Defines.LIGHT_ATTACK_DAMAGE_MOD * damageMod);
+		private void HeavyAttack(Actor attacker, Actor defender, float damageMod = 1f) => Attack(attacker, defender, 1, 1f * damageMod, Defines.HEAVY_ATTACK_TO_HIT_MOD);
 		private void Attack(Actor attacker, Actor defender, int attacks, float damagePercentage, float toHitMod = 1f)
 		{
 			criticals[turns] = new bool[5];
@@ -638,7 +651,7 @@ namespace MiniRPG_CS
 		public bool Use(Actor actor)
 		{
 			if (GetConsumableResource().ResourceType == ResourceType.Experience) actor.GiveExperience((int)GetConsumableResource().MaxWithBonuses);
-			else if (GetConsumableResource().ResourceType == ResourceType.Strength || GetConsumableResource().ResourceType == ResourceType.Dexterity || GetConsumableResource().ResourceType == ResourceType.Vitality) actor.AddAbility(GetConsumableResource().ResourceType, true, (int)GetConsumableResource().MaxWithBonuses);
+			else if ((int)GetConsumableResource().ResourceType > (int)ResourceType.Experience && (int)GetConsumableResource().ResourceType < (int)ResourceType.CriticalDamage) actor.AddAbilityBonuses((actor is Player ? Defines.PlayerAbilityBonuses : Defines.NPCAbilityBonuses), GetConsumableResource().ResourceType, true, (int)GetConsumableResource().MaxWithBonuses);
 			else actor.Resource((int)GetConsumableResource().ResourceType).AddCurrent(GetConsumableResource().MaxWithBonuses);
 			return true;
 		}
@@ -660,12 +673,11 @@ namespace MiniRPG_CS
 			inventory = new Item[Enum.GetValues(typeof(ItemSlot)).Length];
 			CharacterName = name;
 			for (var index = 0; index < Defines.Resources.Count; index++) resources.Add(new Resource(Defines.Resources[index]));
-			AddAbility(ResourceType.Strength, false); AddAbility(ResourceType.Dexterity, false); AddAbility(ResourceType.Vitality, false);
 		}
-		public void AddAbility(ResourceType ability, bool willAddPoint = true, int amount = 1)
+		public void AddAbilityBonuses(List<ResourceConfig[]> resourceConfigs, ResourceType ability, bool willAddPoint = true, int amount = 1)
 		{
 			if (willAddPoint) Resource((int)ability).AddCurrent(amount);
-			foreach (var bonus in Defines.AbilityBonuses[(int)ability - (int)ResourceType.Strength]) Resource((int)bonus.ResourceType).UpdateMaxBonus(CharacterName.GetHashCode(), Resource((int)ability).Current * bonus.Max);
+			foreach (var bonus in resourceConfigs[(int)ability - (int)ResourceType.Strength]) Resource((int)bonus.ResourceType).UpdateMaxBonus(CharacterName.GetHashCode(), Resource((int)ability).Current * bonus.Max);
 		}
 		public Resource Resource(ResourceType resourceType) => Resource((int)resourceType);
 		public Resource Resource(int index) => resources[index];
@@ -708,7 +720,11 @@ namespace MiniRPG_CS
 	public class Player : Actor
 	{
 		private int[] startingItems = new[] { 1, 9, 14 };
-		public Player(string name) : base(name) { for (var index = 0; index < startingItems.Length; index++) SetInventoryItemInSlot(new Item(Defines.Items[startingItems[index]], true)); }
+		public Player(string name) : base(name)
+		{
+			for (var index = (int)ResourceType.Strength; index < (int)ResourceType.Strength + 3; index++) AddAbilityBonuses(Defines.PlayerAbilityBonuses, (ResourceType)index, false);
+			for (var index = 0; index < startingItems.Length; index++) SetInventoryItemInSlot(new Item(Defines.Items[startingItems[index]], true));
+		}
 		public void AddItems() { for (var index = 0; index < startingItems.Length; index++) SetInventoryItemInSlot(new Item(Defines.Items[startingItems[index]], true)); }
 	}
 
@@ -736,6 +752,7 @@ namespace MiniRPG_CS
 			for (var index = 0; index < opponentConfig.StartingItemsIndices.Length; index++) SetInventoryItemInSlot(new Item(Defines.Items[opponentConfig.StartingItemsIndices[index]], true));
 			for (var index = (int)ResourceType.Strength; index < (int)ResourceType.Strength + 3; index++) Resource(index).AddCurrent(opponentConfig.StartingAbilities[index - (int)ResourceType.Strength]);
 			LevelUp(Game.Instance.Level);
+			for (var index = (int)ResourceType.Strength; index < (int)ResourceType.Strength + 3; index++) AddAbilityBonuses(Defines.NPCAbilityBonuses, (ResourceType)index, false);
 			Resource(ResourceType.Health).AddCurrent(Defines.LARGE_NUMBER);
 		}
 
@@ -808,8 +825,13 @@ namespace MiniRPG_CS
 		public Item Item { get; private set; }
 		public RoomStatus RoomStatus { get; private set; }
 
-		public Room(Vec2Int position, RoomType roomType, Item item, RoomStatus roomStatus)
-		{ Position = position; RoomType = roomType; Item = item; RoomStatus = roomStatus; }
+		public Room(Vec2Int position, RoomType roomType, RoomStatus roomStatus)
+		{
+			Position = position;
+			RoomType = roomType;
+			Item = (roomType != RoomType.Empty ? new Item(null, true) : null);
+			RoomStatus = roomStatus;
+		}
 
 		public void ReplaceItem(Item newItem) => Item = newItem;
 		public void UpdateStatus(RoomStatus roomStatus) => RoomStatus = roomStatus;
@@ -825,7 +847,7 @@ namespace MiniRPG_CS
 
 		public Map(int roomsAmount, Vec2Int startPosition = null)
 		{
-			rooms = new List<Room>() { new Room(startPosition ?? PlayerPosition, RoomType.Empty, null, RoomStatus.Explored) };
+			rooms = new List<Room>() { new Room(startPosition ?? PlayerPosition, RoomType.Empty, RoomStatus.Explored) };
 			while (rooms.Count < roomsAmount)
 			{
 				for (var roomIndex = 0; roomIndex < roomsAmount - 1 && rooms.Count < roomsAmount; roomIndex++)
@@ -834,11 +856,7 @@ namespace MiniRPG_CS
 					for (var directionIndex = 0; directionIndex < directions.Length; directionIndex++)
 					{
 						var pos = GetStartingRoom() + directions[directionIndex];
-						if (IsVoid(pos))
-						{
-							var roomType = Defines.DEBUG_ALL_ROOMS == RoomType.None ? (RoomType)(new Random().Next(1, (Enum.GetValues(typeof(RoomType))).Length - 1)) : Defines.DEBUG_ALL_ROOMS;
-							rooms.Add(new Room(pos, roomType, (roomType != RoomType.Empty ? new Item(null, true) : null), RoomStatus.Hidden));
-						}
+						if (IsVoid(pos)) rooms.Add(new Room(pos, Defines.DEBUG_ALL_ROOMS != RoomType.None ? Defines.DEBUG_ALL_ROOMS : GetRandomRoomType(new Random().Next(0, 5)), RoomStatus.Hidden));
 					}
 				}
 			}
@@ -893,6 +911,7 @@ namespace MiniRPG_CS
 			}
 		}
 		private bool IsVoid(Vec2Int pos) => pos.X >= 0 && pos.X < width && pos.Y >= 0 && pos.Y < height && GetRoom(pos) == null;
+		private RoomType GetRandomRoomType(int randomNumber) => randomNumber == 0 ? RoomType.Empty : randomNumber % 2 == 0 ? RoomType.Treasure : RoomType.Fight;
 	}
 }
 

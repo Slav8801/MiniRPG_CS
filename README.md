@@ -35,15 +35,13 @@ you for your Health Regeneration amount. Resting heals you for 2 times that amou
 If you run out of rations you can't rest and you won't heal when moving between rooms. Here's a list of 
 the different rooms types as shown on the map screen:
 
-
-<div>[x] -> You are here.</div>
-[?] -> Unexplored. You can see unexplored rooms adjcened to your location on the map. Exploring this
+- <div>[x] -> You are here.</div>
+- \[?] -> Unexplored. You can see unexplored rooms adjcened to your location on the map. Exploring this
 room will either start a fight or reveal an empty or treasure room.
-[_] -> Empty. Explored and empty. This room has nothing of interest.
-[*] -> Treasure. Explored and has an item in it.
-/_\ -> Staircase. Descends a single depth level. One way trip down. Use or collect items on your
+- \[_] -> Empty. Explored and empty. This room has nothing of interest.
+- \[*] -> Treasure. Explored and has an item in it.
+- /_\\ -> Staircase. Descends a single depth level. One way trip down. Use or collect items on your
 current level before proceding!
-
 
 The combat system has some quirks you might want to be aware of. Firstly, combat is turn based. You will
 usually start first but the enemy can ambush you based on the Initiative stat. You and your opponent take

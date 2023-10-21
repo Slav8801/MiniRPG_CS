@@ -1,8 +1,9 @@
-# Giants Steps
+# Giant's Steps
 
-1. About
 
-GS is a mini roguelike dungeon crawler RPG with turn based combat. It is written in C# and played 
+##1. About
+
+Giant's Steps is a mini roguelike dungeon crawler RPG with turn based combat. It is written in C# and played 
 in a Command Line Interface (CLI).
 
 You play as a lonely adventurer looking for fame and/or fortune. On your trip you will collect loot
@@ -13,19 +14,23 @@ The orginial goal was 600 lines but it quickly grew and is now just under 1000.
 I'm happy with the size but I think I need to unpack some lines.
 I may have gone too far in a few places with the line saving.
 
-2. Installation
 
-- Rip and Tear. That's a bit dramatic. Simply copy the code in this project's Program.cs file, create a new 
-C# Console Application project in Visual Studio, paste the code in your new project's Program.cs file
+##2. Installation
+
+- Download the latest Release. Unzip in a desired folder. Run "MiniRPG_CS.exe".
+- Rip and Tear. That's a bit dramatic. Simply copy the code in this project's "Program.cs" file, create a new 
+C# Console Application project in Visual Studio, paste the code in your new project's "Program.cs" file
 and start debugging. Build an executable if you like - it's up to you. The project targets net 5.0,
 but I don't think that should be an issue for anyone.
 
-3. How to play
+
+##3. How to play
 
 This section was difficult to write because everything you can do is shown as a text prompt on 
 the screen. Basically, GS is a command line game. Options will be presented to you on screen, you 
-will then pick an option, type its index (0/1/2/3 etc.) and press Enter to execute. This should be 
-enough for you to start playing. If you think you're ready, then - go, play the game!
+will then pick an option, type its index (0/1/2/3 etc.) and press Enter to execute. There is NO saving,
+not active or passive. Your run dies when you close the game. You are warned!
+This should be enough for you to start playing. If you think you're ready, then - go, play the game!
 
 Still here? Alright I'll elaborate a bit more.
 I'll avoid the screen by screen breakdown because that shouldn't be necessary anyway. Instead I'll 
@@ -60,8 +65,31 @@ have an armor set with an Evades stat of 2. If 3 of the 4 enemy swings pass thei
 will attempt to evade 2 of those swings using your Evasion Chance. The third swing will hit you. If 
 you fail to evade, the swing goes through as usual, dealing its damage.
 
-4. Takeaways
 
-5. Future
+##4. Takeaways
+
+- Writing code to save lines sucks. Not only do lines end up being extremely wide but it's just plain
+hard to read. Would not recommend to anyone.
+- Not using classes was even worse. So much scrolling. My mouse aches.
+- I got to do some neat things though. For example. Using "++variable" inside an if statement to save a line,
+learning how to best render text in CLI, getting creative with the loot table, figuring out a state 
+system in CLI, finally getting to use my resource system in a more complete way.
+- It was fun making a small scale game without worying about visuals too much. I should do this more often!
+
+
+##5. Future
+Ultimately I want to port this to C++. I've been meaning to get back into it and now's the best time to do that.
+However, there's a few things I want to add before I continue:
+
+- Break it into classes. Yup. It's a nightmare right now.
+- Spread out code. it's simply too compact at the moment.
+- Refactoring. I'd like to clean up the code, place things into their own methods, add variables, etc.
+- Inevitable bug fixes. There will be some.
+- Saving your game. Yea that's a no-brainer. I'd retain the roguelike perma-death, but the game would be 
+save-able through a menu and auto saves will happen at points so you can at least come back if you just
+need to close the window.
+- Some rebalancing. I've swung wildly between too easy and too hard for a while - I wan't to reach a good balance.
+- Add some kind of endgame. Right now you can level up to 100 but the game will continue forever.
+
 
 

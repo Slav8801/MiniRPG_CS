@@ -8,9 +8,12 @@ in a Command Line Interface (CLI).
 
 You play as a lonely adventurer looking for fame and/or fortune. On your trip you will collect loot
 with randomly generated stats and fight generated enemies while navigating randomly generated mazes.
+
 I made it in my spare weekends, in between being a dad, contracting and working on MoonWard.
+
 It began as an experiment to see what's the least amount of lines I can fit a full game inside.
 The orginial goal was 600 lines but it quickly grew and is now just under 1000.
+
 I'm happy with the size but I think I need to unpack some lines.
 I may have gone too far in a few places with the line saving.
 
@@ -30,9 +33,11 @@ This section was difficult to write because everything you can do is shown as a 
 the screen. Basically, GS is a command line game. Options will be presented to you on screen, you
 will then pick an option, type its index (0/1/2/3 etc.) and press Enter to execute. There is NO saving,
 not active or passive. Your run dies when you close the game. You are warned!
+
 This should be enough for you to start playing. If you think you're ready, then - go, play the game!
 
 Still here? Alright I'll elaborate a bit more.
+
 I'll avoid the screen by screen breakdown because that shouldn't be necessary anyway. Instead I'll
 just give you a quick overview of the more obscure things. GS is a dungeon crawler which means you
 go from room to room clearing enemies or looting loot. Moving to a new room always uses 1 ration and heals
@@ -60,6 +65,7 @@ have a higher miss chance. Some weapons have more Swings than others.
 Your character total Armor Rating will passively lower damage the higher it is. Every armor set has the
 Evades stat which determines your active defences. Some armor sets have more Evades than others. Evades
 determines how many enemy swings you will attempt to evade during a combat turn.
+
 For example. Lets say the enemy uses Light Attacks with a weapon that has a Swings stat of 4 and you
 have an armor set with an Evades stat of 2. If 3 of the 4 enemy swings pass their Hit Chance check, you
 will attempt to evade 2 of those swings using your Evasion Chance. The third swing will hit you. If

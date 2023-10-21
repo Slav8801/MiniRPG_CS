@@ -393,7 +393,7 @@ namespace MiniRPG_CS
 				var leftSideSpace = Defines.FillTextToSize(string.Empty, (int)MathF.Ceiling((Defines.COMPARISON_SHEET_WIDTH - $"Name: {name}".Length) * 0.5f), " ");
 				var healthCurrent = IOUtility.GetResourceLine(Game.Instance.Player, ResourceType.Health, true, true);
 				var rationsCurrent = IOUtility.GetResourceLine(Game.Instance.Player, ResourceType.Rations);
-				Console.WriteLine($"|{leftSideSpace}Name: {name}\n|{healthCurrent}\n|{rationsCurrent}\n{IOUtility.Underline}\n");
+				Console.WriteLine($"|{leftSideSpace}Name: {name}\n|Depth Level: {((Player)Game.Instance.Player).Depth}\n|Level: {Game.Instance.Level}\n|Health: {healthCurrent}\n|Rations: {rationsCurrent}\n{IOUtility.Underline}\n");
 			}, BaseOptions, BaseActions);
 		}
 
@@ -772,12 +772,14 @@ namespace MiniRPG_CS
 
 	public class Player : Actor
 	{
+		public int Depth { get; private set; } = 0;
 		private int[] startingItems = new[] { 1, 9, 14 };
 		public Player(string name) : base(name)
 		{
 			AddItems(startingItems);
 			AddAbilities(Defines.PlayerAbilityBonuses);
 		}
+		public void IncreaseDepth() => Depth++;
 	}
 
 	public class OpponentConfig
@@ -899,6 +901,7 @@ namespace MiniRPG_CS
 
 		public Map(int roomsAmount, Vec2Int startPosition = null)
 		{
+			((Player)Game.Instance.Player).IncreaseDepth();
 			rooms = new List<Room>() { new Room(startPosition ?? PlayerPosition, RoomType.Empty, RoomStatus.Explored) };
 			while (rooms.Count < roomsAmount)
 			{

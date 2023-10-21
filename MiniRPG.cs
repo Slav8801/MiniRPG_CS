@@ -393,24 +393,25 @@ namespace MiniRPG_CS
 				var leftSideSpace = Defines.FillTextToSize(string.Empty, (int)MathF.Ceiling((Defines.COMPARISON_SHEET_WIDTH - $"Name: {name}".Length) * 0.5f), " ");
 				var healthCurrent = IOUtility.GetResourceLine(Game.Instance.Player, ResourceType.Health, true, true);
 				var rationsCurrent = IOUtility.GetResourceLine(Game.Instance.Player, ResourceType.Rations);
-				Console.WriteLine($"|{leftSideSpace}Name: {name}\n|Depth Level: {((Player)Game.Instance.Player).Depth}\n|Level: {Game.Instance.Level}\n|Health: {healthCurrent}\n|Rations: {rationsCurrent}\n{IOUtility.Underline}\n");
+				Console.WriteLine($"|{leftSideSpace}Name: {name}\n|Depth Level: {((Player)Game.Instance.Player).Depth}\n|Level: {Game.Instance.Level}\n|{healthCurrent}\n|{rationsCurrent}\n{IOUtility.Underline}\n");
 			}, BaseOptions, BaseActions);
 		}
 
 		private void MovePlayer(Vec2Int direction)
 		{
-			if (Game.Instance.Map.MovePlayer(direction) && WillHeal().HasValue) OnChangeState?.Invoke(StateType.Room);
+			UseRations();
+			if (Game.Instance.Map.MovePlayer(direction)) OnChangeState?.Invoke(StateType.Room);
 			ShowTextAndReset(new[] { "Can't go that way!" });
 		}
 		private void Rest()
 		{
-			if (!WillHeal(2f).Value) ShowTextAndReset(new[] { $"Not enough {ResourceType.Rations} to rest!" });
+			if (!UseRations(2f)) ShowTextAndReset(new[] { $"Not enough {ResourceType.Rations} to rest!" });
 			ShowTextAndReset(new[] { "You find a safe spot and take a nap.", "You feel much better when you wake up!" });
 		}
-		private bool? WillHeal(float healMod = 1f)
+		private bool UseRations(float healMod = 1f)
 		{
 			if (Game.Instance.Player.Resource(ResourceType.Rations).Current <= 0) return false;
-			Game.Instance.Player.Resource(ResourceType.Rations).AddCurrent(-1f);
+			else Game.Instance.Player.Resource(ResourceType.Rations).AddCurrent(-1f);
 			Game.Instance.Player.Resource(ResourceType.Health).AddCurrent((int)MathF.Ceiling(Game.Instance.Player.Resource(ResourceType.HealthRegeneration).Max * healMod));
 			return true;
 		}

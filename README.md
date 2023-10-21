@@ -35,7 +35,7 @@ you for your Health Regeneration amount. Resting heals you for 2 times that amou
 If you run out of rations you can't rest and you won't heal when moving between rooms. Here's a list of 
 the different rooms types as shown on the map screen:
 
-- \[x] -> You are here. This is the room your adventurer is currently in. It obscures the room's type
+- <div>[x]</div> -> You are here. This is the room your adventurer is currently in. It obscures the room's type
 visual but you can still do actions available for this room type.
 - \[?] -> Unexplored. You can see unexplored rooms adjcened to your location on the map. Exploring this
 room will either start a fight or reveal an empty or treasure room.

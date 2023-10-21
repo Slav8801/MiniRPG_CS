@@ -147,7 +147,7 @@ namespace MiniRPG_CS
 
 		private void Intro(string image)
 		{
-			Console.WriteLine(image);
+			Console.WriteLine($"{image}\n\n{ioUtility.Continue}");
 			Console.ReadLine();
 			Console.Clear();
 		}
@@ -419,13 +419,13 @@ namespace MiniRPG_CS
 	public class CharacterSheetState : State
 	{
 		public override StateType StateTypeId => StateType.CharacterSheet;
-		protected override string[] BaseOptions => new string[] { $"{ResourceType.Strength} +1", $"{ResourceType.Dexterity} +1", $"{ResourceType.Vitality} +1", "Use Consumable", "Back" };
+		protected override string[] BaseOptions => new string[] { "Use Consumable", $"{ResourceType.Strength} +1", $"{ResourceType.Dexterity} +1", $"{ResourceType.Vitality} +1", "Back" };
 		protected override Action[] BaseActions => new Action[]
 		{
+			UseConsumable,
 			() => AddAbility(ResourceType.Strength),
 			() => AddAbility(ResourceType.Dexterity),
 			() => AddAbility(ResourceType.Vitality),
-			UseConsumable,
 			() => OnChangeState?.Invoke(MiniRPGStateMachine.PreviousState.StateTypeId)
 		};
 
@@ -773,7 +773,7 @@ namespace MiniRPG_CS
 	public class Player : Actor
 	{
 		public int Depth { get; private set; } = 0;
-		private int[] startingItems = new[] { 1, 9, 14 };
+		private int[] startingItems = new[] { 3, 9, 14 };
 		public Player(string name) : base(name)
 		{
 			AddItems(startingItems);

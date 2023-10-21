@@ -20,9 +20,9 @@ namespace MiniRPG_CS
 		{
 			new ResourceConfig(ResourceType.None, 0f, 0f),
 			new ResourceConfig(ResourceType.Health, 100f, LARGE_NUMBER_F, LARGE_NUMBER_F, 1.8f, false),
-			new ResourceConfig(ResourceType.Armor, 0f, LARGE_NUMBER_F, 0f, 0.2f, true),
+			new ResourceConfig(ResourceType.ArmorRating, 0f, LARGE_NUMBER_F, 0f, 0.2f, true),
 			new ResourceConfig(ResourceType.Damage, 0f, LARGE_NUMBER_F, 0f, 0.2f, true),
-			new ResourceConfig(ResourceType.Attacks, 0f, 5f, 0f, 0f, true),
+			new ResourceConfig(ResourceType.Swings, 0f, 5f, 0f, 0f, true),
 			new ResourceConfig(ResourceType.Evades, 0f, 5f, 0f, 0f, true),
 			new ResourceConfig(ResourceType.AbilityPoints, 100f, 100f, 5f),
 			new ResourceConfig(ResourceType.Experience, LARGE_NUMBER_F, LARGE_NUMBER_F),
@@ -40,13 +40,13 @@ namespace MiniRPG_CS
 		};
 		public static List<ResourceConfig[]> PlayerAbilityBonuses => new List<ResourceConfig[]>
 		{
-			new[] {new ResourceConfig(ResourceType.Damage, 1f), new ResourceConfig(ResourceType.Armor, 1f), },
+			new[] {new ResourceConfig(ResourceType.Damage, 1f), new ResourceConfig(ResourceType.ArmorRating, 1f), },
 			new[] {new ResourceConfig(ResourceType.ChanceToHit, 1f), new ResourceConfig(ResourceType.ChanceToEvade, 1f), new ResourceConfig(ResourceType.Initiative, 1f), },
 			new[] {new ResourceConfig(ResourceType.Health, 5f), new ResourceConfig(ResourceType.HealthRegeneration, 2f), },
 		};
 		public static List<ResourceConfig[]> NPCAbilityBonuses => new List<ResourceConfig[]>
 		{
-			new[] {new ResourceConfig(ResourceType.Damage, 0.3f), new ResourceConfig(ResourceType.Armor, 0.75f), },
+			new[] {new ResourceConfig(ResourceType.Damage, 0.3f), new ResourceConfig(ResourceType.ArmorRating, 0.75f), },
 			new[] {new ResourceConfig(ResourceType.ChanceToHit, 0.7f), new ResourceConfig(ResourceType.ChanceToEvade, 0.6f), new ResourceConfig(ResourceType.Initiative, 1f), },
 			new[] {new ResourceConfig(ResourceType.Health, 2f), new ResourceConfig(ResourceType.HealthRegeneration, 0f), },
 		};
@@ -54,20 +54,20 @@ namespace MiniRPG_CS
 		public static void GetItemIndexWithName(string name, ref int itemIndex) { for (var index = 0; index < Items.Count; index++) if (name.GetHashCode() == Items[index].ItemName.GetHashCode()) itemIndex = index; }
 		public static List<ItemConfig> Items => new List<ItemConfig>
 		{
-	/*0*/	new ItemConfig(ItemSlot.Weapon, "Dagger", new ResourceConfig[] { new ResourceConfig( ResourceType.Damage, 32f), new ResourceConfig( ResourceType.Attacks, 5f), new ResourceConfig( ResourceType.CriticalChance, 35f), }),
-			new ItemConfig(ItemSlot.Weapon, "Baton", new ResourceConfig[] { new ResourceConfig( ResourceType.Damage, 36f), new ResourceConfig( ResourceType.Attacks, 5f), new ResourceConfig( ResourceType.CriticalChance, 30f), }),
-	/*2*/	new ItemConfig(ItemSlot.Weapon, "Hatchet", new ResourceConfig[] { new ResourceConfig( ResourceType.Damage, 40f), new ResourceConfig( ResourceType.Attacks, 5f), new ResourceConfig( ResourceType.CriticalChance, 25f), }),
-	/*3*/	new ItemConfig(ItemSlot.Weapon, "Sabre", new ResourceConfig[] { new ResourceConfig( ResourceType.Damage, 50f), new ResourceConfig( ResourceType.Attacks, 4f), new ResourceConfig( ResourceType.CriticalChance, 20f), }),
-			new ItemConfig(ItemSlot.Weapon, "Flanged Mace", new ResourceConfig[] { new ResourceConfig( ResourceType.Damage, 55f), new ResourceConfig( ResourceType.Attacks, 3f), new ResourceConfig( ResourceType.CriticalChance, 18f), }),
-	/*5*/	new ItemConfig(ItemSlot.Weapon, "Battleaxe", new ResourceConfig[] { new ResourceConfig( ResourceType.Damage, 60f), new ResourceConfig( ResourceType.Attacks, 3f), new ResourceConfig( ResourceType.CriticalChance, 16f), }),
-	/*6*/	new ItemConfig(ItemSlot.Weapon, "Banesword", new ResourceConfig[] { new ResourceConfig( ResourceType.Damage, 75f), new ResourceConfig( ResourceType.Attacks, 2f), new ResourceConfig( ResourceType.CriticalChance, 16f), }),
-			new ItemConfig(ItemSlot.Weapon, "Maul", new ResourceConfig[] { new ResourceConfig( ResourceType.Damage, 90f), new ResourceConfig( ResourceType.Attacks, 1f), new ResourceConfig( ResourceType.CriticalChance, 8f), }),
-	/*8*/	new ItemConfig(ItemSlot.Weapon, "Halberd", new ResourceConfig[] { new ResourceConfig( ResourceType.Damage, 80f), new ResourceConfig( ResourceType.Attacks, 2f), new ResourceConfig( ResourceType.CriticalChance, 12f), }),
-	/*9*/	new ItemConfig(ItemSlot.Armor, "Warling", new ResourceConfig[] { new ResourceConfig( ResourceType.Armor, 45f), new ResourceConfig( ResourceType.Evades, 5f) }),
-			new ItemConfig(ItemSlot.Armor, "Heavy Robes", new ResourceConfig[] { new ResourceConfig( ResourceType.Armor, 60f), new ResourceConfig( ResourceType.Evades, 4f) }),
-			new ItemConfig(ItemSlot.Armor, "Chainmail", new ResourceConfig[] { new ResourceConfig( ResourceType.Armor, 90f), new ResourceConfig( ResourceType.Evades, 3f) }),
-			new ItemConfig(ItemSlot.Armor, "Warplate", new ResourceConfig[] { new ResourceConfig( ResourceType.Armor, 125f), new ResourceConfig( ResourceType.Evades, 2f) }),
-	/*13*/	new ItemConfig(ItemSlot.Armor, "Truthkeeper", new ResourceConfig[] { new ResourceConfig( ResourceType.Armor, 150f), new ResourceConfig( ResourceType.Evades, 1f) }),
+	/*0*/	new ItemConfig(ItemSlot.Weapon, "Dagger", new ResourceConfig[] { new ResourceConfig( ResourceType.Damage, 32f), new ResourceConfig( ResourceType.Swings, 5f), new ResourceConfig( ResourceType.CriticalChance, 35f), }),
+			new ItemConfig(ItemSlot.Weapon, "Baton", new ResourceConfig[] { new ResourceConfig( ResourceType.Damage, 36f), new ResourceConfig( ResourceType.Swings, 5f), new ResourceConfig( ResourceType.CriticalChance, 30f), }),
+	/*2*/	new ItemConfig(ItemSlot.Weapon, "Hatchet", new ResourceConfig[] { new ResourceConfig( ResourceType.Damage, 40f), new ResourceConfig( ResourceType.Swings, 5f), new ResourceConfig( ResourceType.CriticalChance, 25f), }),
+	/*3*/	new ItemConfig(ItemSlot.Weapon, "Sabre", new ResourceConfig[] { new ResourceConfig( ResourceType.Damage, 50f), new ResourceConfig( ResourceType.Swings, 4f), new ResourceConfig( ResourceType.CriticalChance, 20f), }),
+			new ItemConfig(ItemSlot.Weapon, "Flanged Mace", new ResourceConfig[] { new ResourceConfig( ResourceType.Damage, 55f), new ResourceConfig( ResourceType.Swings, 3f), new ResourceConfig( ResourceType.CriticalChance, 18f), }),
+	/*5*/	new ItemConfig(ItemSlot.Weapon, "Battleaxe", new ResourceConfig[] { new ResourceConfig( ResourceType.Damage, 60f), new ResourceConfig( ResourceType.Swings, 3f), new ResourceConfig( ResourceType.CriticalChance, 16f), }),
+	/*6*/	new ItemConfig(ItemSlot.Weapon, "Banesword", new ResourceConfig[] { new ResourceConfig( ResourceType.Damage, 75f), new ResourceConfig( ResourceType.Swings, 2f), new ResourceConfig( ResourceType.CriticalChance, 16f), }),
+			new ItemConfig(ItemSlot.Weapon, "Maul", new ResourceConfig[] { new ResourceConfig( ResourceType.Damage, 90f), new ResourceConfig( ResourceType.Swings, 1f), new ResourceConfig( ResourceType.CriticalChance, 8f), }),
+	/*8*/	new ItemConfig(ItemSlot.Weapon, "Halberd", new ResourceConfig[] { new ResourceConfig( ResourceType.Damage, 80f), new ResourceConfig( ResourceType.Swings, 2f), new ResourceConfig( ResourceType.CriticalChance, 12f), }),
+	/*9*/	new ItemConfig(ItemSlot.Armor, "Warling", new ResourceConfig[] { new ResourceConfig( ResourceType.ArmorRating, 45f), new ResourceConfig( ResourceType.Evades, 5f) }),
+			new ItemConfig(ItemSlot.Armor, "Heavy Robes", new ResourceConfig[] { new ResourceConfig( ResourceType.ArmorRating, 60f), new ResourceConfig( ResourceType.Evades, 4f) }),
+			new ItemConfig(ItemSlot.Armor, "Chainmail", new ResourceConfig[] { new ResourceConfig( ResourceType.ArmorRating, 90f), new ResourceConfig( ResourceType.Evades, 3f) }),
+			new ItemConfig(ItemSlot.Armor, "Warplate", new ResourceConfig[] { new ResourceConfig( ResourceType.ArmorRating, 125f), new ResourceConfig( ResourceType.Evades, 2f) }),
+	/*13*/	new ItemConfig(ItemSlot.Armor, "Truthkeeper", new ResourceConfig[] { new ResourceConfig( ResourceType.ArmorRating, 150f), new ResourceConfig( ResourceType.Evades, 1f) }),
 	/*14*/	new ItemConfig(ItemSlot.Consumable, "Snakeweed Oil", new ResourceConfig[] { new ResourceConfig( ResourceType.Health, 150f) }),
 			new ItemConfig(ItemSlot.Consumable, "Snakeweed Elixir", new ResourceConfig[] { new ResourceConfig( ResourceType.Health, 300f) }),
 			new ItemConfig(ItemSlot.Consumable, "Energetic Crystal", new ResourceConfig[] { new ResourceConfig( ResourceType.Health, 600f) }),
@@ -118,7 +118,7 @@ namespace MiniRPG_CS
 		}
 	}
 
-	public enum ResourceType { None, Health, Armor, Damage, Attacks, Evades, AbilityPoints, Experience, Strength, Dexterity, Vitality, CriticalDamage, CriticalChance, ChanceToHit, ChanceToEvade, Level, Initiative, HealthRegeneration, Rations }
+	public enum ResourceType { None, Health, ArmorRating, Damage, Swings, Evades, AbilityPoints, Experience, Strength, Dexterity, Vitality, CriticalDamage, CriticalChance, ChanceToHit, ChanceToEvade, Level, Initiative, HealthRegeneration, Rations }
 	public enum StateType { None, MainMenu, CharacterCreation, Map, CharacterSheet, Room, Fight }
 	public enum ItemSlot { Weapon, Armor, Consumable }
 	public enum RoomType { None, Empty, Treasure, Fight, Staircase }
@@ -227,10 +227,10 @@ namespace MiniRPG_CS
 				GetResourceLine(player, ResourceType.Health, true, true),
 				GetResourceLine(player, ResourceType.HealthRegeneration, false, true),
 				GetResourceLine(player, ResourceType.Initiative, false, true),
-				GetResourceLine(player, ResourceType.Armor, false, true),
+				GetResourceLine(player, ResourceType.ArmorRating, false, true),
 				GetResourceLine(player, ResourceType.Evades, false, true),
 				GetResourceLine(player, ResourceType.Damage, false, true),
-				GetResourceLine(player, ResourceType.Attacks, false, true),
+				GetResourceLine(player, ResourceType.Swings, false, true),
 				GetResourceLine(player, ResourceType.ChanceToHit, false, true),
 				GetResourceLine(player, ResourceType.ChanceToEvade, false, true),
 				GetResourceLine(player, ResourceType.CriticalChance, false, true),
@@ -276,8 +276,8 @@ namespace MiniRPG_CS
 		{
 			equipmentLines.AddRange(new[] { string.Empty, $"___{itemSlot}: {(item == null ? "None Equipped" : item.ItemName)}" });
 			if (item == null) return;
-			if (item.ItemConfig.Slot == ItemSlot.Weapon) equipmentLines.AddRange(new[] { $" {GetItemLine(item, ResourceType.Damage)}", $" {GetItemLine(item, ResourceType.Attacks)}", $" {GetItemLine(item, ResourceType.CriticalChance)}" });
-			if (item.ItemConfig.Slot == ItemSlot.Armor) equipmentLines.AddRange(new[] { $" {GetItemLine(item, ResourceType.Armor)}", $" {GetItemLine(item, ResourceType.Evades)}" });
+			if (item.ItemConfig.Slot == ItemSlot.Weapon) equipmentLines.AddRange(new[] { $" {GetItemLine(item, ResourceType.Damage)}", $" {GetItemLine(item, ResourceType.Swings)}", $" {GetItemLine(item, ResourceType.CriticalChance)}" });
+			if (item.ItemConfig.Slot == ItemSlot.Armor) equipmentLines.AddRange(new[] { $" {GetItemLine(item, ResourceType.ArmorRating)}", $" {GetItemLine(item, ResourceType.Evades)}" });
 			if (item.ItemConfig.Slot == ItemSlot.Consumable) equipmentLines.Add($" Effect: +{item.GetConsumableResource().Max} {item.GetConsumableResource().ResourceType}");
 			else
 			{
@@ -512,11 +512,11 @@ namespace MiniRPG_CS
 	{
 		public override StateType StateTypeId => StateType.Fight;
 		protected override string[] BaseOptions => new string[] {
-			GetAttackString("Light Attack ", actors[playerIndex], (int)actors[playerIndex].Resource(ResourceType.Attacks).Max, Defines.LIGHT_ATTACK_DAMAGE_MOD, 1f),
+			GetAttackString("Light Attacks ", actors[playerIndex], (int)actors[playerIndex].Resource(ResourceType.Swings).Max, Defines.LIGHT_ATTACK_DAMAGE_MOD, 1f),
 			GetAttackString("Heavy Attack ", actors[playerIndex], 1, 1f, Defines.HEAVY_ATTACK_TO_HIT_MOD),
 			$"Use Consumable ({(actors[playerIndex].GetInventoryItemFromSlot(ItemSlot.Consumable) == null ? "None" : actors[playerIndex].GetInventoryItemFromSlot(ItemSlot.Consumable).ItemName)})",
-			"Debug: Win!", "Debug: Lose!", };
-		protected override Action[] BaseActions => new Action[] { () => LightAttack(actors[playerIndex], actors[opponentIndex]), () => HeavyAttack(actors[playerIndex], actors[opponentIndex]), () => UseConsumable(actors[playerIndex], actors[opponentIndex]), () => Won(), Lost };
+			/*"Debug: Win!","Debug: Lose!", */ };
+		protected override Action[] BaseActions => new Action[] { () => LightAttack(actors[playerIndex], actors[opponentIndex]), () => HeavyAttack(actors[playerIndex], actors[opponentIndex]), () => UseConsumable(actors[playerIndex], actors[opponentIndex]), /*() => Won(), Lost*/ };
 
 		private List<int>[] attackLists = new[] { new List<int>(), new List<int>() };
 		private bool[][] criticals = new bool[][] { new bool[5], new bool[5] };
@@ -582,7 +582,7 @@ namespace MiniRPG_CS
 			if (lightChance > heavyChance) LightAttack(actor, actors[playerIndex], Defines.NPC_DAMAGE_NERF);
 			else HeavyAttack(actor, actors[playerIndex], Defines.NPC_DAMAGE_NERF);
 		}
-		private void LightAttack(Actor attacker, Actor defender, float damageMod = 1f) => Attack(attacker, defender, (int)attacker.Resource(ResourceType.Attacks).Max, Defines.LIGHT_ATTACK_DAMAGE_MOD * damageMod);
+		private void LightAttack(Actor attacker, Actor defender, float damageMod = 1f) => Attack(attacker, defender, (int)attacker.Resource(ResourceType.Swings).Max, Defines.LIGHT_ATTACK_DAMAGE_MOD * damageMod);
 		private void HeavyAttack(Actor attacker, Actor defender, float damageMod = 1f) => Attack(attacker, defender, 1, 1f * damageMod, Defines.HEAVY_ATTACK_TO_HIT_MOD);
 		private void Attack(Actor attacker, Actor defender, int attacks, float damagePercentage, float toHitMod = 1f)
 		{
@@ -630,7 +630,7 @@ namespace MiniRPG_CS
 		}
 		private void EvaluateDefence(Actor defender, ref List<int> potentialHits)
 		{
-			var armorRating = 1f - MathF.Min(defender.Resource(ResourceType.Armor).Max < float.Epsilon ? 0f : defender.Resource(ResourceType.Armor).Max / 300f, 0.95f);
+			var armorRating = 1f - MathF.Min(defender.Resource(ResourceType.ArmorRating).Max < float.Epsilon ? 0f : defender.Resource(ResourceType.ArmorRating).Max / 300f, 0.95f);
 			for (var index = 0; index < potentialHits.Count; index++) if (potentialHits[index] > 0) potentialHits[index] = (int)MathF.Max(1f, MathF.Round(armorRating * potentialHits[index]));
 		}
 		private bool WillPotentiallyHit(Actor attacker, float toHitMod = 1f) => (new Random().NextDouble() * 100f) < MathF.Min(95f, MathF.Round(attacker.Resource(ResourceType.ChanceToHit).Max * toHitMod));

@@ -76,7 +76,7 @@ you fail to evade, the swing goes through as usual, dealing its damage.
 
 - Writing code to save lines sucks. Not only do lines end up being extremely wide but it's just plain
 hard to read. Would not recommend to anyone.
-- Not using classes was even worse. So much scrolling. My mouse aches.
+- Not using classes in separate files was even worse. So much scrolling. My mouse aches.
 - I got to do some neat things though. For example. Using "++variable" inside an if statement to save a line,
 learning how to best render text in CLI, getting creative with the loot table, figuring out a state
 system in CLI, finally getting to use my resource system in a more complete way.

@@ -20,11 +20,25 @@ I may have gone too far in a few places with the line saving.
 
 ## 2. Installation
 
+First off - you will unfortunately need Windows, Wine on Linux or WineBottler on MacOS to play this.
+Might look into porting this to Linux proper and even to MacOS but no promises as of now.
+
+The executable requires .NET Runtime 5.0.17. The following steps are for windows.
+
+- To get .NET Runtime 5.0.17 go to this link: https://dotnet.microsoft.com/en-us/download/dotnet/5.0
+- Under the "5.0.17" tab, search for ".NET Runtime 5.0.17", it'll be on the bottom right.
+- Download the installer that corresponds to your system (Windows/x64 for most of you).
+- When the download is complete use the executable, install and you're ready.
+
+Disclaimer: I've only tested this on Windows so not sure if Wine/WineBottler will even work.
+
+TO Install GS:
+
 - Download the latest Release. Unzip in a desired folder. Run "MiniRPG_CS.exe".
 - Rip and Tear. That's a bit dramatic. Simply copy the code in this project's "Program.cs" file, create a new
 C# Console Application project in Visual Studio, paste the code in your new project's "Program.cs" file
-and start debugging. Build an executable if you like - it's up to you. The project targets net 5.0,
-but I don't think that should be an issue for anyone.
+and start debugging. Build an executable if you like - it's up to you. My project targets .NET 5.0,
+but the code should be .NET agnostic so I don't think that should be an issue for anyone.
 
 
 ## 3. How to play

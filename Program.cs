@@ -97,7 +97,7 @@ namespace MiniRPG_CS
 	/*9*/	new OpponentConfig("Obsidian Geckin", new[] {2, 13, 18}, new[] {0, 0, 15 }, ResourceType.Vitality),
 		};
 
-		public static int ExpToNextLevel(int currentLevel) => (int)MathF.Floor(currentLevel * 0.201f) + 1;
+		public static int ExpToNextLevel(int currentLevel) => (int)Math.Floor(currentLevel * 0.201f) + 1;
 		public static string AddSpacesBeforeCapitals(string text)
 		{
 			if (string.IsNullOrWhiteSpace(text)) return string.Empty;
@@ -215,7 +215,7 @@ namespace MiniRPG_CS
 		{
 			var player = Game.Instance.Player;
 			var characterLines = new List<string> {
-				$"{Defines.FillTextToSize("", (int)MathF.Ceiling((Defines.COMPARISON_SHEET_WIDTH - $"Name: {player.CharacterName}".Length) * 0.5f), " ")}Name: {player.CharacterName}",
+				$"{Defines.FillTextToSize("", (int)Math.Ceiling((Defines.COMPARISON_SHEET_WIDTH - $"Name: {player.CharacterName}".Length) * 0.5f), " ")}Name: {player.CharacterName}",
 				"", "___Levels:",
 				GetResourceLine(player, ResourceType.Level),
 				$"{GetResourceLine(player, ResourceType.Experience)}/{Defines.ExpToNextLevel(player.Level)}",
@@ -268,7 +268,7 @@ namespace MiniRPG_CS
 
 		private void CombineTwoLists(List<string> list1, List<string> list2, int text1Width)
 		{
-			for (var index = 0; index < (int)MathF.Max(list1.Count, list2.Count); index++) DrawSheetLine(GetLine(list1, index), GetLine(list2, index), "|", text1Width);
+			for (var index = 0; index < (int)Math.Max(list1.Count, list2.Count); index++) DrawSheetLine(GetLine(list1, index), GetLine(list2, index), "|", text1Width);
 			string GetLine(List<string> list, int lineIndex) => list.Count > lineIndex ? list[lineIndex] : string.Empty;
 		}
 		private void DrawSheetLine(string text1, string text2, string separator, int text1Width) => Console.WriteLine($"|{Defines.FillTextToSize(text1, text1Width)}{separator}{text2}");
@@ -369,7 +369,7 @@ namespace MiniRPG_CS
 			"Explore Current Room",
 			"Move North", "Move South", "Move East", "Move West",
 			"Character Sheet",
-			$"Rest (+{(int)MathF.Round(Game.Instance.Player.Resource(ResourceType.HealthRegeneration).Max * 2f)} {ResourceType.Health})",
+			$"Rest (+{(int)Math.Round(Game.Instance.Player.Resource(ResourceType.HealthRegeneration).Max * 2f)} {ResourceType.Health})",
 			"Quit" };
 		protected override Action[] BaseActions => new Action[]
 		{
@@ -391,7 +391,7 @@ namespace MiniRPG_CS
 				Game.Instance.Map.DrawMap();
 				if (Game.Instance.Player.HasJustLeveledUp) IOUtility.DrawLeveledUpText();
 				var name = Game.Instance.Player.CharacterName;
-				var leftSideSpace = Defines.FillTextToSize(string.Empty, (int)MathF.Ceiling((Defines.COMPARISON_SHEET_WIDTH - $"Name: {name}".Length) * 0.5f), " ");
+				var leftSideSpace = Defines.FillTextToSize(string.Empty, (int)Math.Ceiling((Defines.COMPARISON_SHEET_WIDTH - $"Name: {name}".Length) * 0.5f), " ");
 				var healthCurrent = IOUtility.GetResourceLine(Game.Instance.Player, ResourceType.Health, true, true);
 				var rationsCurrent = IOUtility.GetResourceLine(Game.Instance.Player, ResourceType.Rations);
 				Console.WriteLine($"|{leftSideSpace}Name: {name}\n| Depth Level: {((Player)Game.Instance.Player).Depth}\n| Level: {Game.Instance.Level}\n|{healthCurrent}\n|{rationsCurrent}\n{IOUtility.Underline}\n");
@@ -413,7 +413,7 @@ namespace MiniRPG_CS
 		{
 			if (Game.Instance.Player.Resource(ResourceType.Rations).Current <= 0) return false;
 			else Game.Instance.Player.Resource(ResourceType.Rations).AddCurrent(-1f);
-			Game.Instance.Player.Resource(ResourceType.Health).AddCurrent((int)MathF.Ceiling(Game.Instance.Player.Resource(ResourceType.HealthRegeneration).Max * healMod));
+			Game.Instance.Player.Resource(ResourceType.Health).AddCurrent((int)Math.Ceiling(Game.Instance.Player.Resource(ResourceType.HealthRegeneration).Max * healMod));
 			return true;
 		}
 	}
@@ -552,7 +552,7 @@ namespace MiniRPG_CS
 			{
 				var actorAttacks = attackLists[actorIndex];
 				if (actorIndex > playerIndex && attackLists[playerIndex].Count == 0) Console.WriteLine($"| A sneaky {actors[opponentIndex].CharacterName} ambushed you!\n|");
-				Console.WriteLine($"{Defines.FillTextToSize("|", (int)MathF.Round((Defines.COMPARISON_SHEET_WIDTH - actors[actorIndex].CharacterName.Length) * 0.5f), " ")}{actors[actorIndex].CharacterName}\n|{IOUtility.GetResourceLine(actors[actorIndex], ResourceType.Health, true, true)}");
+				Console.WriteLine($"{Defines.FillTextToSize("|", (int)Math.Round((Defines.COMPARISON_SHEET_WIDTH - actors[actorIndex].CharacterName.Length) * 0.5f), " ")}{actors[actorIndex].CharacterName}\n|{IOUtility.GetResourceLine(actors[actorIndex], ResourceType.Health, true, true)}");
 				if (actorAttacks.Count != 0)
 				{
 					for (var index = 0; index < actorAttacks.Count; index++)
@@ -594,7 +594,7 @@ namespace MiniRPG_CS
 			attackLists[turns] = GetPotentialHits(attacker, attacks, damagePercentage, toHitMod);
 			EvaluateEvasions(defender, ref attackLists[turns]);
 			EvaluateDefence(defender, ref attackLists[turns]);
-			foreach (var attack in attackLists[turns]) if (attack > 0) defender.Resource(ResourceType.Health).AddCurrent(-MathF.Abs(attack));
+			foreach (var attack in attackLists[turns]) if (attack > 0) defender.Resource(ResourceType.Health).AddCurrent(-Math.Abs(attack));
 			if (turns > 0) DrawCombat();
 			else AI();
 		}
@@ -616,7 +616,7 @@ namespace MiniRPG_CS
 			{
 				var critMod = GetCritMultiplier(attacker);
 				criticals[turns][index] = critMod > 1f;
-				result.Add(WillPotentiallyHit(attacker, toHitMod) ? (int)MathF.Round((attacker.Resource(ResourceType.Damage).Max * damagePercentage * critMod)) : 0);
+				result.Add(WillPotentiallyHit(attacker, toHitMod) ? (int)Math.Round((attacker.Resource(ResourceType.Damage).Max * damagePercentage * critMod)) : 0);
 			}
 			return result;
 		}
@@ -632,10 +632,10 @@ namespace MiniRPG_CS
 		}
 		private void EvaluateDefence(Actor defender, ref List<int> potentialHits)
 		{
-			var armorRating = 1f - MathF.Min(defender.Resource(ResourceType.ArmorRating).Max < float.Epsilon ? 0f : defender.Resource(ResourceType.ArmorRating).Max / 300f, 0.95f);
-			for (var index = 0; index < potentialHits.Count; index++) if (potentialHits[index] > 0) potentialHits[index] = (int)MathF.Max(1f, MathF.Round(armorRating * potentialHits[index]));
+			var armorRating = 1f - Math.Min(defender.Resource(ResourceType.ArmorRating).Max < float.Epsilon ? 0f : defender.Resource(ResourceType.ArmorRating).Max / 300f, 0.95f);
+			for (var index = 0; index < potentialHits.Count; index++) if (potentialHits[index] > 0) potentialHits[index] = (int)Math.Max(1f, Math.Round(armorRating * potentialHits[index]));
 		}
-		private bool WillPotentiallyHit(Actor attacker, float toHitMod = 1f) => (new Random().NextDouble() * 100f) < MathF.Min(95f, MathF.Round(attacker.Resource(ResourceType.ChanceToHit).Max * toHitMod));
+		private bool WillPotentiallyHit(Actor attacker, float toHitMod = 1f) => (new Random().NextDouble() * 100f) < Math.Min(95f, Math.Round(attacker.Resource(ResourceType.ChanceToHit).Max * toHitMod));
 		private bool WillCrit(Actor attacker) => (new Random().NextDouble() * 100f) < attacker.Resource(ResourceType.CriticalChance).Max;
 		private float GetCritMultiplier(Actor attacker) => (WillCrit(attacker) ? (attacker.Resource(ResourceType.CriticalDamage).Max * 0.01f) : 1f);
 		private bool WillEvade(Actor defender) => (new Random().NextDouble() * 100f) < defender.Resource(ResourceType.ChanceToEvade).Max;
@@ -655,7 +655,7 @@ namespace MiniRPG_CS
 				$"They achieved level {actors[playerIndex].Level} before perishing.",
 				$"How tragic!" }, StateType.MainMenu, DrawTurns);
 		}
-		private string GetAttackString(string moveName, Actor actor, int times, float damagePercentage, float toHitMod) => $"{moveName}({(int)MathF.Round(toHitMod * actor.Resource(ResourceType.ChanceToHit).Max)}% to hit, {times}x{(int)MathF.Round(actor.Resource(ResourceType.Damage).Max * damagePercentage)} damage)";
+		private string GetAttackString(string moveName, Actor actor, int times, float damagePercentage, float toHitMod) => $"{moveName}({(int)Math.Round(toHitMod * actor.Resource(ResourceType.ChanceToHit).Max)}% to hit, {times}x{(int)Math.Round(actor.Resource(ResourceType.Damage).Max * damagePercentage)} damage)";
 	}
 
 	public class ItemConfig
@@ -689,11 +689,11 @@ namespace MiniRPG_CS
 			if ((ItemConfig = itemConfig) == null) ItemConfig = Defines.Items[Defines.LootTable[new Random().Next(0, Defines.Items.Count)]];
 			for (var index = 0; index < Defines.Resources.Count; index++) resources.Add(new Resource(ItemConfig.ResourceConfigs[index]));
 			if (!isForPlayer || ItemConfig.Slot == ItemSlot.Consumable) return;
-			for (var index = 0; index < (int)MathF.Floor(Game.Instance.Level * Defines.ITEM_BONUSES_LEVEL_MOD); index++)
+			for (var index = 0; index < (int)Math.Floor(Game.Instance.Level * Defines.ITEM_BONUSES_LEVEL_MOD); index++)
 			{
 				var resource = resources[new Random().Next(1, resources.Count)];
-				var bonusAmount = MathF.Floor(Game.Instance.Level * Defines.Resources[(int)resource.ResourceType].BonusMod);
-				if (resource.Max < float.Epsilon && bonusAmount > float.Epsilon) resource.UpdateMaxBonus(ItemHashId, bonusAmount);
+				var bonusAmount = Math.Floor(Game.Instance.Level * Defines.Resources[(int)resource.ResourceType].BonusMod);
+				if (resource.Max < float.Epsilon && bonusAmount > float.Epsilon) resource.UpdateMaxBonus(ItemHashId, (float)bonusAmount);
 			}
 		}
 		public Resource Resource(ResourceType resourceType) => Resource((int)resourceType);
@@ -751,7 +751,7 @@ namespace MiniRPG_CS
 				var exp = Resource(ResourceType.Experience);
 				var xpToLevelUp = Defines.ExpToNextLevel(Level) - exp.Current;
 				exp.AddCurrent(amount > xpToLevelUp ? xpToLevelUp : (float)amount);
-				amount -= amount > xpToLevelUp ? (int)MathF.Round(xpToLevelUp) : amount;
+				amount -= amount > xpToLevelUp ? (int)Math.Round(xpToLevelUp) : amount;
 				if ((int)exp.Current == Defines.ExpToNextLevel(Level) && !HasLeveledUp()) return;
 			}
 		}
@@ -846,8 +846,8 @@ namespace MiniRPG_CS
 	public class Resource
 	{
 		public ResourceType ResourceType => resourceConfig.ResourceType;
-		public bool IsAtMax => (int)MathF.Round(Max) == (int)MathF.Round(Current);
-		public float Max => MathF.Min(resourceConfig.Max + maxBonuses.Sum(x => x.Value), resourceConfig.Cap);
+		public bool IsAtMax => (int)Math.Round(Max) == (int)Math.Round(Current);
+		public float Max => Math.Min(resourceConfig.Max + maxBonuses.Sum(x => x.Value), resourceConfig.Cap);
 		public float Current { get; private set; }
 		public bool HasBonuses => maxBonuses.Count > 0;
 
@@ -869,7 +869,7 @@ namespace MiniRPG_CS
 		{
 			if (willRemove && maxBonuses.ContainsKey(idHash)) maxBonuses.Remove(idHash);
 			if (!willRemove && maxBonuses.ContainsKey(idHash)) maxBonuses[idHash] = amount;
-			if (!willRemove && !maxBonuses.ContainsKey(idHash) && MathF.Abs(amount) > float.Epsilon) maxBonuses.Add(idHash, amount);
+			if (!willRemove && !maxBonuses.ContainsKey(idHash) && Math.Abs(amount) > float.Epsilon) maxBonuses.Add(idHash, amount);
 			AddCurrent(resourceConfig.WillSetToMaxOnUpdate ? Max : 0);
 		}
 	}

@@ -6,7 +6,11 @@ namespace MiniRPG_CS
 {
 	public static class Defines
 	{
-		public const string ROOM_VOID = "   ", ROOM_PLAYER = "[x]", ROOM_SEEN = "[?]", ROOM_STAIRCASE = "\\_/", ROOM_EMPTY = "[_]", ROOM_ITEM = "[*]";
+		public const string INTRO_1 = @"                                                                                " + "\n" + @"                                                                                " + "\n" + @"                                                                                " + "\n" + @"                        ###(                                                    " + "\n" + @"                      /##### ,                                                  " + "\n" + @"  %%%%%#/           #%%%%%%%(#(                                    .,,         #" + "\n" + @"%%%%%%%%%#       .%%%%%&%%%%%%%/             ///,*/              ******,,,   .%%" + "\n" + @"%%%%%%%%%%%(#*#%%&&&&&&&&&&%%%%##,     /((((((((/(((/  ,,,,,,,,***///*******,%%%" + "\n" + @"&&&&&&%%%%&&&&&&&&&&&&&&&&&&%%%%###/((((((((((((((((//*//***////////////////%%%%" + "\n" + @"@@&&&&&&&&&&&&&&&&&&&&&&&&&&&&&%%%%#((((/##/(((/(((((///////(////(((((((///(%%%%" + "\n" + @"@@%&&%&&&&&&&&&&&&&&&&&&&&&&&&%&&&&%#%%%%%#%#(((//(///////(#((((((((((((/((%#&%(" + "\n" + @"%#&%@&%&&&&&&&&&&&&&&&&&&&&&&&%%%%%%%%#%%%#%%%%##((((((((((((//((/////%%%&&&&&@&" + "\n" + @"&&&&%&(##%%&&&&&&&%&%%&&%%%%%%%%%%%%%%%%#######((((((//////(##((###%##%%#%&@@&@&" + "\n" + @"&%%&#%%&#%%%%%%%%%%%%%%%%%%%%%#########((((((((((//&&&&%&&#%%%%%%%&&&%&&&&&&&&&&" + "\n" + @"&&&&%%&%#######((((######(((((((//////(((##//(#(&&@@@@@@@@@@&%%####(((((((((%##(" + "\n" + @"@&#&%&%###%/%%#(###(%((////((%#%%#(##%#((#(####&@@@@@@@@@&&%%%&&&%%#######%%%&&%" + "\n" + @"&%&&&&&&@@&#%%%%&%#((((#/(((#%%&&%%###(###%%%&@&@&&@&&@@@&@@@&&&@@&@&@%#%#&&&&%&" + "\n" + @"@@&%&&%&&&%%%%%%%%&&&#%%&(((/((((&(#((###(##%&&&@&&@@%&&@@@@@&&&&@@&&&&@&@@&&@@&" + "\n" + @"''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''" + "\n" + @"Deep in the Ustrean countryside, in a forgotten valley amongst the mountains, an" + "\n" + @"evil place exists. There, in the cliffside, an ornate stone archway welcomes the" + "\n" + @"foolish, the foolhardy and the desperate.  Legends tell of riches and of wonders" + "\n" + @"far beyond imagination. Countless have fallen to this lure of gold and fame.....";
+		public const string INTRO_2 = @"                                                          .%%&&%&&&&@@@@@&@&&@&&" + "\n" + @"                                      **,                  ,(#&%&&&&@&@@@&&@@&@@" + "\n" + @"                                    .(%/(*                  /(%(%&&&&@@&&@&&&@@&" + "\n" + @"                                   ./(%%&//                 *(((#%%&&&&&&&&&@&@@" + "\n" + @"                                   */ %&%&%(,                (/%%(%#(&&&&&@@@@&&" + "\n" + @"                                   (#((##%#&%.                &%%%####&&%%&%%&&@" + "\n" + @"                                   &#(#(#%%&@&                 *#%%#%#/&&%%%&&&&" + "\n" + @"                                  /&%##/(#%% @&                 (/((/%&%&&&&&&&&" + "\n" + @"                                  &&%(*((#%% @&&&&&%,           #/#//#%%%#%#&&&%" + "\n" + @"                               &(&@&%##((#%%  @@@@@@&            ////(#%%%#&&&&&" + "\n" + @"                             *#&#&%%##%@/#%%%,@@@@@@,            */***#(#%%&&&@&" + "\n" + @"                        .*(((%#&   &@@@@@@@@, @&@@@&             (**/*(/%%%&&&&&" + "\n" + @"                    /((##            &@@@&@#  @@@               (((##%%(%#@%&&@%" + "\n" + @"                                     @&@@%&(  &%               #*(/*#%#(%&&&&%%&" + "\n" + @"                                     &&%%&%@&                 (/#//#*%#(#%&&(#&&" + "\n" + @"                                      &##*%@(                ,/*%(/%%%&%&%&@&&%&" + "\n" + @"                                      &##(&&#((###%         (//(&%&&&&&@@@%&&@&%" + "\n" + @"                                      %@@@@@@@&#(/%(##%/#(((*((((&/#/(&%&%&@@%&@" + "\n" + @"                                    (@@@@@&%&%%%%%&@**/%%&%##&%%%%#/%&&&@@@@##@#" + "\n" + @"&&&%&&&%&@&@@@@&&&&&&&&%%%%%%&%@&@@@@@&&&@&@&#%#%(/#(%&&@%%@@&@@&&&&@&@&@@@@@%&&" + "\n" + @"''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''" + "\n" + @"A lone figure aproaches the entrance cautiously. It stops and looks behind. Warm" + "\n" + @"summer sun reveals a troubled face. The figure takes a deep breath and takes one" + "\n" + @"stride down, towards the abyss. Many more lie ahead on this descent into the....";
+		public const string GAME_TITLE = @"\__________________________________________________________________________________________\                       " + "\n" + @" \__________________________________________________________________________________________\                      " + "\n" + @"  \__________________________________________________________________________________________\                     " + "\n" + @"   \______/\\\\\\\\\\\\___________________________________________________/\\\\_______________\                    " + "\n" + @"    \____/\\\//////////___________________________________________________\///\\_______________\                   " + "\n" + @"     \___/\\\______________/\\\__________________________________/\\\_______/\\/________________\                  " + "\n" + @"      \__\/\\\____/\\\\\\\_\///___/\\\\\\\\\_____/\\/\\\\\\____/\\\\\\\\\\\_\//_____/\\\\\\\\\\__\                 " + "\n" + @"       \__\/\\\___\/////\\\__/\\\_\////////\\\___\/\\\////\\\__\////\\\////_________\/\\\//////___\                " + "\n" + @"        \__\/\\\_______\/\\\_\/\\\___/\\\\\\\\\\__\/\\\__\//\\\____\/\\\_____________\/\\\\\\\\\\__\               " + "\n" + @"         \__\/\\\_______\/\\\_\/\\\__/\\\/////\\\__\/\\\___\/\\\____\/\\\_/\\_________\////////\\\__\              " + "\n" + @"          \__\//\\\\\\\\\\\\/__\/\\\_\//\\\\\\\\/\\_\/\\\___\/\\\____\//\\\\\___________/\\\\\\\\\\__\             " + "\n" + @"           \___\////////////____\///___\////////\//__\///____\///______\/////___________\//////////___\            " + "\n" + @"            \_______/\\\\\\\\\\\_______________________________________________________________________\           " + "\n" + @"             \_____/\\\/////////\\\_____________________________________________________________________\          " + "\n" + @"              \____\//\\\______\///______/\\\_______________________/\\\\\\\\\___________________________\         " + "\n" + @"               \_____\////\\\__________/\\\\\\\\\\\_____/\\\\\\\\___/\\\/////\\\__/\\\\\\\\\\_____________\        " + "\n" + @"                \________\////\\\______\////\\\////____/\\\/////\\\_\/\\\\\\\\\\__\/\\\//////______________\       " + "\n" + @"                 \___________\////\\\______\/\\\_______/\\\\\\\\\\\__\/\\\//////___\/\\\\\\\\\\_____________\      " + "\n" + @"                  \____/\\\______\//\\\_____\/\\\_/\\__\//\\///////___\/\\\_________\////////\\\_____________\     " + "\n" + @"                   \___\///\\\\\\\\\\\/______\//\\\\\____\//\\\\\\\\\\_\/\\\__________/\\\\\\\\\\_____________\    " + "\n" + @"                    \_____\///////////_________\/////______\//////////__\///__________\//////////______________\   " + "\n" + @"                     \__________________________________________________________________________________________\  " + "\n" + @"                      \__________________________________________________________________________________________\ " + "\n" + @"                       \__________________________________________________________________________________________\";
+
+		public const string ROOM_VOID = "   ", ROOM_PLAYER = "[x]", ROOM_SEEN = "[?]", ROOM_STAIRCASE = "/_\\", ROOM_EMPTY = "[_]", ROOM_ITEM = "[*]";
 		public const int CONSUMABLE_POINTS_OFFSET = 10000, LARGE_NUMBER = 6650, COMPARISON_SHEET_WIDTH = 36, NPC_HEAL_THRESHOLD = 140;
 		public const float ITEM_BONUSES_LEVEL_MOD = 0.0501f, LARGE_NUMBER_F = 6650f, LIGHT_ATTACK_DAMAGE_MOD = 0.45f, HEAVY_ATTACK_TO_HIT_MOD = 1.6f, NPC_DAMAGE_NERF = 0.6f;
 		public const int DEBUG_XP_FOR_WIN = 0;
@@ -16,9 +20,9 @@ namespace MiniRPG_CS
 		{
 			new ResourceConfig(ResourceType.None, 0f, 0f),
 			new ResourceConfig(ResourceType.Health, 100f, LARGE_NUMBER_F, LARGE_NUMBER_F, 1.8f, false),
-			new ResourceConfig(ResourceType.Armor, 0f, LARGE_NUMBER_F, 0f, 0.2f, true),
+			new ResourceConfig(ResourceType.ArmorRating, 0f, LARGE_NUMBER_F, 0f, 0.2f, true),
 			new ResourceConfig(ResourceType.Damage, 0f, LARGE_NUMBER_F, 0f, 0.2f, true),
-			new ResourceConfig(ResourceType.Attacks, 0f, 5f, 0f, 0f, true),
+			new ResourceConfig(ResourceType.Swings, 0f, 5f, 0f, 0f, true),
 			new ResourceConfig(ResourceType.Evades, 0f, 5f, 0f, 0f, true),
 			new ResourceConfig(ResourceType.AbilityPoints, 100f, 100f, 5f),
 			new ResourceConfig(ResourceType.Experience, LARGE_NUMBER_F, LARGE_NUMBER_F),
@@ -36,34 +40,34 @@ namespace MiniRPG_CS
 		};
 		public static List<ResourceConfig[]> PlayerAbilityBonuses => new List<ResourceConfig[]>
 		{
-			new[] {new ResourceConfig(ResourceType.Damage, 1f), new ResourceConfig(ResourceType.Armor, 1f), },
+			new[] {new ResourceConfig(ResourceType.Damage, 1f), new ResourceConfig(ResourceType.ArmorRating, 1f), },
 			new[] {new ResourceConfig(ResourceType.ChanceToHit, 1f), new ResourceConfig(ResourceType.ChanceToEvade, 1f), new ResourceConfig(ResourceType.Initiative, 1f), },
 			new[] {new ResourceConfig(ResourceType.Health, 5f), new ResourceConfig(ResourceType.HealthRegeneration, 2f), },
 		};
 		public static List<ResourceConfig[]> NPCAbilityBonuses => new List<ResourceConfig[]>
 		{
-			new[] {new ResourceConfig(ResourceType.Damage, 0.3f), new ResourceConfig(ResourceType.Armor, 0.75f), },
+			new[] {new ResourceConfig(ResourceType.Damage, 0.3f), new ResourceConfig(ResourceType.ArmorRating, 0.75f), },
 			new[] {new ResourceConfig(ResourceType.ChanceToHit, 0.7f), new ResourceConfig(ResourceType.ChanceToEvade, 0.6f), new ResourceConfig(ResourceType.Initiative, 1f), },
 			new[] {new ResourceConfig(ResourceType.Health, 2f), new ResourceConfig(ResourceType.HealthRegeneration, 0f), },
 		};
-		public static int[] RandomItems => new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 22, 22, 23, 23, 23, 24, 24, 24, 25, 25, 26, 26 };
+		public static int[] LootTable => new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 22, 22, 23, 23, 23, 24, 24, 24, 25, 25, 26, 26 };
 		public static void GetItemIndexWithName(string name, ref int itemIndex) { for (var index = 0; index < Items.Count; index++) if (name.GetHashCode() == Items[index].ItemName.GetHashCode()) itemIndex = index; }
 		public static List<ItemConfig> Items => new List<ItemConfig>
 		{
-	/*0*/	new ItemConfig(ItemSlot.Weapon, "Dagger", new ResourceConfig[] { new ResourceConfig( ResourceType.Damage, 32f), new ResourceConfig( ResourceType.Attacks, 5f), new ResourceConfig( ResourceType.CriticalChance, 35f), }),
-			new ItemConfig(ItemSlot.Weapon, "Baton", new ResourceConfig[] { new ResourceConfig( ResourceType.Damage, 36f), new ResourceConfig( ResourceType.Attacks, 5f), new ResourceConfig( ResourceType.CriticalChance, 30f), }),
-	/*2*/	new ItemConfig(ItemSlot.Weapon, "Hatchet", new ResourceConfig[] { new ResourceConfig( ResourceType.Damage, 40f), new ResourceConfig( ResourceType.Attacks, 5f), new ResourceConfig( ResourceType.CriticalChance, 25f), }),
-	/*3*/	new ItemConfig(ItemSlot.Weapon, "Sabre", new ResourceConfig[] { new ResourceConfig( ResourceType.Damage, 50f), new ResourceConfig( ResourceType.Attacks, 4f), new ResourceConfig( ResourceType.CriticalChance, 20f), }),
-			new ItemConfig(ItemSlot.Weapon, "Flanged Mace", new ResourceConfig[] { new ResourceConfig( ResourceType.Damage, 55f), new ResourceConfig( ResourceType.Attacks, 3f), new ResourceConfig( ResourceType.CriticalChance, 18f), }),
-	/*5*/	new ItemConfig(ItemSlot.Weapon, "Battleaxe", new ResourceConfig[] { new ResourceConfig( ResourceType.Damage, 60f), new ResourceConfig( ResourceType.Attacks, 3f), new ResourceConfig( ResourceType.CriticalChance, 16f), }),
-	/*6*/	new ItemConfig(ItemSlot.Weapon, "Banesword", new ResourceConfig[] { new ResourceConfig( ResourceType.Damage, 75f), new ResourceConfig( ResourceType.Attacks, 2f), new ResourceConfig( ResourceType.CriticalChance, 16f), }),
-			new ItemConfig(ItemSlot.Weapon, "Maul", new ResourceConfig[] { new ResourceConfig( ResourceType.Damage, 90f), new ResourceConfig( ResourceType.Attacks, 1f), new ResourceConfig( ResourceType.CriticalChance, 8f), }),
-	/*8*/	new ItemConfig(ItemSlot.Weapon, "Halberd", new ResourceConfig[] { new ResourceConfig( ResourceType.Damage, 80f), new ResourceConfig( ResourceType.Attacks, 2f), new ResourceConfig( ResourceType.CriticalChance, 12f), }),
-	/*9*/	new ItemConfig(ItemSlot.Armor, "Warling", new ResourceConfig[] { new ResourceConfig( ResourceType.Armor, 45f), new ResourceConfig( ResourceType.Evades, 5f) }),
-			new ItemConfig(ItemSlot.Armor, "Heavy Robes", new ResourceConfig[] { new ResourceConfig( ResourceType.Armor, 60f), new ResourceConfig( ResourceType.Evades, 4f) }),
-			new ItemConfig(ItemSlot.Armor, "Chainmail", new ResourceConfig[] { new ResourceConfig( ResourceType.Armor, 90f), new ResourceConfig( ResourceType.Evades, 3f) }),
-			new ItemConfig(ItemSlot.Armor, "Warplate", new ResourceConfig[] { new ResourceConfig( ResourceType.Armor, 125f), new ResourceConfig( ResourceType.Evades, 2f) }),
-	/*13*/	new ItemConfig(ItemSlot.Armor, "Truthkeeper", new ResourceConfig[] { new ResourceConfig( ResourceType.Armor, 150f), new ResourceConfig( ResourceType.Evades, 1f) }),
+	/*0*/	new ItemConfig(ItemSlot.Weapon, "Dagger", new ResourceConfig[] { new ResourceConfig( ResourceType.Damage, 32f), new ResourceConfig( ResourceType.Swings, 5f), new ResourceConfig( ResourceType.CriticalChance, 35f), }),
+			new ItemConfig(ItemSlot.Weapon, "Baton", new ResourceConfig[] { new ResourceConfig( ResourceType.Damage, 36f), new ResourceConfig( ResourceType.Swings, 5f), new ResourceConfig( ResourceType.CriticalChance, 30f), }),
+	/*2*/	new ItemConfig(ItemSlot.Weapon, "Hatchet", new ResourceConfig[] { new ResourceConfig( ResourceType.Damage, 40f), new ResourceConfig( ResourceType.Swings, 5f), new ResourceConfig( ResourceType.CriticalChance, 25f), }),
+	/*3*/	new ItemConfig(ItemSlot.Weapon, "Sabre", new ResourceConfig[] { new ResourceConfig( ResourceType.Damage, 50f), new ResourceConfig( ResourceType.Swings, 4f), new ResourceConfig( ResourceType.CriticalChance, 20f), }),
+			new ItemConfig(ItemSlot.Weapon, "Flanged Mace", new ResourceConfig[] { new ResourceConfig( ResourceType.Damage, 55f), new ResourceConfig( ResourceType.Swings, 3f), new ResourceConfig( ResourceType.CriticalChance, 18f), }),
+	/*5*/	new ItemConfig(ItemSlot.Weapon, "Battleaxe", new ResourceConfig[] { new ResourceConfig( ResourceType.Damage, 60f), new ResourceConfig( ResourceType.Swings, 3f), new ResourceConfig( ResourceType.CriticalChance, 16f), }),
+	/*6*/	new ItemConfig(ItemSlot.Weapon, "Banesword", new ResourceConfig[] { new ResourceConfig( ResourceType.Damage, 75f), new ResourceConfig( ResourceType.Swings, 2f), new ResourceConfig( ResourceType.CriticalChance, 16f), }),
+			new ItemConfig(ItemSlot.Weapon, "Maul", new ResourceConfig[] { new ResourceConfig( ResourceType.Damage, 90f), new ResourceConfig( ResourceType.Swings, 1f), new ResourceConfig( ResourceType.CriticalChance, 8f), }),
+	/*8*/	new ItemConfig(ItemSlot.Weapon, "Halberd", new ResourceConfig[] { new ResourceConfig( ResourceType.Damage, 80f), new ResourceConfig( ResourceType.Swings, 2f), new ResourceConfig( ResourceType.CriticalChance, 12f), }),
+	/*9*/	new ItemConfig(ItemSlot.Armor, "Warling", new ResourceConfig[] { new ResourceConfig( ResourceType.ArmorRating, 45f), new ResourceConfig( ResourceType.Evades, 5f) }),
+			new ItemConfig(ItemSlot.Armor, "Heavy Robes", new ResourceConfig[] { new ResourceConfig( ResourceType.ArmorRating, 60f), new ResourceConfig( ResourceType.Evades, 4f) }),
+			new ItemConfig(ItemSlot.Armor, "Chainmail", new ResourceConfig[] { new ResourceConfig( ResourceType.ArmorRating, 90f), new ResourceConfig( ResourceType.Evades, 3f) }),
+			new ItemConfig(ItemSlot.Armor, "Warplate", new ResourceConfig[] { new ResourceConfig( ResourceType.ArmorRating, 125f), new ResourceConfig( ResourceType.Evades, 2f) }),
+	/*13*/	new ItemConfig(ItemSlot.Armor, "Truthkeeper", new ResourceConfig[] { new ResourceConfig( ResourceType.ArmorRating, 150f), new ResourceConfig( ResourceType.Evades, 1f) }),
 	/*14*/	new ItemConfig(ItemSlot.Consumable, "Snakeweed Oil", new ResourceConfig[] { new ResourceConfig( ResourceType.Health, 150f) }),
 			new ItemConfig(ItemSlot.Consumable, "Snakeweed Elixir", new ResourceConfig[] { new ResourceConfig( ResourceType.Health, 300f) }),
 			new ItemConfig(ItemSlot.Consumable, "Energetic Crystal", new ResourceConfig[] { new ResourceConfig( ResourceType.Health, 600f) }),
@@ -114,7 +118,7 @@ namespace MiniRPG_CS
 		}
 	}
 
-	public enum ResourceType { None, Health, Armor, Damage, Attacks, Evades, AbilityPoints, Experience, Strength, Dexterity, Vitality, CriticalDamage, CriticalChance, ChanceToHit, ChanceToEvade, Level, Initiative, HealthRegeneration, Rations }
+	public enum ResourceType { None, Health, ArmorRating, Damage, Swings, Evades, AbilityPoints, Experience, Strength, Dexterity, Vitality, CriticalDamage, CriticalChance, ChanceToHit, ChanceToEvade, Level, Initiative, HealthRegeneration, Rations }
 	public enum StateType { None, MainMenu, CharacterCreation, Map, CharacterSheet, Room, Fight }
 	public enum ItemSlot { Weapon, Armor, Consumable }
 	public enum RoomType { None, Empty, Treasure, Fight, Staircase }
@@ -133,7 +137,20 @@ namespace MiniRPG_CS
 		private State state;
 		private IOUtility ioUtility = new IOUtility();
 
-		public MiniRPGStateMachine() => ChangeState(StateType.MainMenu);
+		public MiniRPGStateMachine()
+		{
+			Intro(Defines.INTRO_1);
+			Intro(Defines.INTRO_2);
+			Intro(Defines.GAME_TITLE);
+			ChangeState(StateType.MainMenu);
+		}
+
+		private void Intro(string image)
+		{
+			Console.WriteLine($"{image}\n\n{ioUtility.Continue}");
+			Console.ReadLine();
+			Console.Clear();
+		}
 
 		protected void GoToState<T>(T newState) where T : State
 		{
@@ -210,10 +227,10 @@ namespace MiniRPG_CS
 				GetResourceLine(player, ResourceType.Health, true, true),
 				GetResourceLine(player, ResourceType.HealthRegeneration, false, true),
 				GetResourceLine(player, ResourceType.Initiative, false, true),
-				GetResourceLine(player, ResourceType.Armor, false, true),
+				GetResourceLine(player, ResourceType.ArmorRating, false, true),
 				GetResourceLine(player, ResourceType.Evades, false, true),
 				GetResourceLine(player, ResourceType.Damage, false, true),
-				GetResourceLine(player, ResourceType.Attacks, false, true),
+				GetResourceLine(player, ResourceType.Swings, false, true),
 				GetResourceLine(player, ResourceType.ChanceToHit, false, true),
 				GetResourceLine(player, ResourceType.ChanceToEvade, false, true),
 				GetResourceLine(player, ResourceType.CriticalChance, false, true),
@@ -259,8 +276,8 @@ namespace MiniRPG_CS
 		{
 			equipmentLines.AddRange(new[] { string.Empty, $"___{itemSlot}: {(item == null ? "None Equipped" : item.ItemName)}" });
 			if (item == null) return;
-			if (item.ItemConfig.Slot == ItemSlot.Weapon) equipmentLines.AddRange(new[] { $" {GetItemLine(item, ResourceType.Damage)}", $" {GetItemLine(item, ResourceType.Attacks)}", $" {GetItemLine(item, ResourceType.CriticalChance)}" });
-			if (item.ItemConfig.Slot == ItemSlot.Armor) equipmentLines.AddRange(new[] { $" {GetItemLine(item, ResourceType.Armor)}", $" {GetItemLine(item, ResourceType.Evades)}" });
+			if (item.ItemConfig.Slot == ItemSlot.Weapon) equipmentLines.AddRange(new[] { $" {GetItemLine(item, ResourceType.Damage)}", $" {GetItemLine(item, ResourceType.Swings)}", $" {GetItemLine(item, ResourceType.CriticalChance)}" });
+			if (item.ItemConfig.Slot == ItemSlot.Armor) equipmentLines.AddRange(new[] { $" {GetItemLine(item, ResourceType.ArmorRating)}", $" {GetItemLine(item, ResourceType.Evades)}" });
 			if (item.ItemConfig.Slot == ItemSlot.Consumable) equipmentLines.Add($" Effect: +{item.GetConsumableResource().Max} {item.GetConsumableResource().ResourceType}");
 			else
 			{
@@ -349,15 +366,15 @@ namespace MiniRPG_CS
 		protected override string[] BaseOptions => new string[]
 		{
 			"Explore Current Room",
-			"Move North", "Move South", "Move West", "Move East",
+			"Move North", "Move South", "Move East", "Move West",
 			"Character Sheet",
-			$"Rest (+{Game.Instance.Player.Resource(ResourceType.HealthRegeneration).Max * 2f} {ResourceType.Health})",
+			$"Rest (+{(int)MathF.Round(Game.Instance.Player.Resource(ResourceType.HealthRegeneration).Max * 2f)} {ResourceType.Health})",
 			"Quit" };
 		protected override Action[] BaseActions => new Action[]
 		{
 			() => OnChangeState?.Invoke(StateType.Room),
 			() => MovePlayer(new Vec2Int(0, 1)), () => MovePlayer(new Vec2Int(0, -1)),
-			() => MovePlayer(new Vec2Int(-1, 0)), () => MovePlayer(new Vec2Int(1, 0)),
+			() => MovePlayer(new Vec2Int(1, 0)), () => MovePlayer(new Vec2Int(-1, 0)),
 			() => OnChangeState?.Invoke(StateType.CharacterSheet),
 			Rest,
 			() => OnChangeState?.Invoke(StateType.MainMenu)
@@ -376,24 +393,25 @@ namespace MiniRPG_CS
 				var leftSideSpace = Defines.FillTextToSize(string.Empty, (int)MathF.Ceiling((Defines.COMPARISON_SHEET_WIDTH - $"Name: {name}".Length) * 0.5f), " ");
 				var healthCurrent = IOUtility.GetResourceLine(Game.Instance.Player, ResourceType.Health, true, true);
 				var rationsCurrent = IOUtility.GetResourceLine(Game.Instance.Player, ResourceType.Rations);
-				Console.WriteLine($"|{leftSideSpace}Name: {name}\n|{healthCurrent}\n|{rationsCurrent}\n{IOUtility.Underline}\n");
+				Console.WriteLine($"|{leftSideSpace}Name: {name}\n| Depth Level: {((Player)Game.Instance.Player).Depth}\n| Level: {Game.Instance.Level}\n|{healthCurrent}\n|{rationsCurrent}\n{IOUtility.Underline}\n");
 			}, BaseOptions, BaseActions);
 		}
 
 		private void MovePlayer(Vec2Int direction)
 		{
-			if (Game.Instance.Map.MovePlayer(direction) && WillHeal().HasValue) OnChangeState?.Invoke(StateType.Room);
+			UseRations();
+			if (Game.Instance.Map.MovePlayer(direction)) OnChangeState?.Invoke(StateType.Room);
 			ShowTextAndReset(new[] { "Can't go that way!" });
 		}
 		private void Rest()
 		{
-			if (!WillHeal(2f).Value) ShowTextAndReset(new[] { $"Not enough {ResourceType.Rations} to rest!" });
+			if (!UseRations(2f)) ShowTextAndReset(new[] { $"Not enough {ResourceType.Rations} to rest!" });
 			ShowTextAndReset(new[] { "You find a safe spot and take a nap.", "You feel much better when you wake up!" });
 		}
-		private bool? WillHeal(float healMod = 1f)
+		private bool UseRations(float healMod = 1f)
 		{
 			if (Game.Instance.Player.Resource(ResourceType.Rations).Current <= 0) return false;
-			Game.Instance.Player.Resource(ResourceType.Rations).AddCurrent(-1f);
+			else Game.Instance.Player.Resource(ResourceType.Rations).AddCurrent(-1f);
 			Game.Instance.Player.Resource(ResourceType.Health).AddCurrent((int)MathF.Ceiling(Game.Instance.Player.Resource(ResourceType.HealthRegeneration).Max * healMod));
 			return true;
 		}
@@ -402,13 +420,13 @@ namespace MiniRPG_CS
 	public class CharacterSheetState : State
 	{
 		public override StateType StateTypeId => StateType.CharacterSheet;
-		protected override string[] BaseOptions => new string[] { $"{ResourceType.Strength} +1", $"{ResourceType.Dexterity} +1", $"{ResourceType.Vitality} +1", "Use Consumable", "Back" };
+		protected override string[] BaseOptions => new string[] { "Use Consumable", $"{ResourceType.Strength} +1", $"{ResourceType.Dexterity} +1", $"{ResourceType.Vitality} +1", "Back" };
 		protected override Action[] BaseActions => new Action[]
 		{
+			UseConsumable,
 			() => AddAbility(ResourceType.Strength),
 			() => AddAbility(ResourceType.Dexterity),
 			() => AddAbility(ResourceType.Vitality),
-			UseConsumable,
 			() => OnChangeState?.Invoke(MiniRPGStateMachine.PreviousState.StateTypeId)
 		};
 
@@ -495,11 +513,11 @@ namespace MiniRPG_CS
 	{
 		public override StateType StateTypeId => StateType.Fight;
 		protected override string[] BaseOptions => new string[] {
-			GetAttackString("Light Attack ", actors[playerIndex], (int)actors[playerIndex].Resource(ResourceType.Attacks).Max, Defines.LIGHT_ATTACK_DAMAGE_MOD, 1f),
+			GetAttackString("Light Attacks ", actors[playerIndex], (int)actors[playerIndex].Resource(ResourceType.Swings).Max, Defines.LIGHT_ATTACK_DAMAGE_MOD, 1f),
 			GetAttackString("Heavy Attack ", actors[playerIndex], 1, 1f, Defines.HEAVY_ATTACK_TO_HIT_MOD),
 			$"Use Consumable ({(actors[playerIndex].GetInventoryItemFromSlot(ItemSlot.Consumable) == null ? "None" : actors[playerIndex].GetInventoryItemFromSlot(ItemSlot.Consumable).ItemName)})",
-			"Debug: Win!", "Debug: Lose!", };
-		protected override Action[] BaseActions => new Action[] { () => LightAttack(actors[playerIndex], actors[opponentIndex]), () => HeavyAttack(actors[playerIndex], actors[opponentIndex]), () => UseConsumable(actors[playerIndex], actors[opponentIndex]), () => Won(), Lost };
+			/*"Debug: Win!","Debug: Lose!", */ };
+		protected override Action[] BaseActions => new Action[] { () => LightAttack(actors[playerIndex], actors[opponentIndex]), () => HeavyAttack(actors[playerIndex], actors[opponentIndex]), () => UseConsumable(actors[playerIndex], actors[opponentIndex]), /*() => Won(), Lost*/ };
 
 		private List<int>[] attackLists = new[] { new List<int>(), new List<int>() };
 		private bool[][] criticals = new bool[][] { new bool[5], new bool[5] };
@@ -565,7 +583,7 @@ namespace MiniRPG_CS
 			if (lightChance > heavyChance) LightAttack(actor, actors[playerIndex], Defines.NPC_DAMAGE_NERF);
 			else HeavyAttack(actor, actors[playerIndex], Defines.NPC_DAMAGE_NERF);
 		}
-		private void LightAttack(Actor attacker, Actor defender, float damageMod = 1f) => Attack(attacker, defender, (int)attacker.Resource(ResourceType.Attacks).Max, Defines.LIGHT_ATTACK_DAMAGE_MOD * damageMod);
+		private void LightAttack(Actor attacker, Actor defender, float damageMod = 1f) => Attack(attacker, defender, (int)attacker.Resource(ResourceType.Swings).Max, Defines.LIGHT_ATTACK_DAMAGE_MOD * damageMod);
 		private void HeavyAttack(Actor attacker, Actor defender, float damageMod = 1f) => Attack(attacker, defender, 1, 1f * damageMod, Defines.HEAVY_ATTACK_TO_HIT_MOD);
 		private void Attack(Actor attacker, Actor defender, int attacks, float damagePercentage, float toHitMod = 1f)
 		{
@@ -613,7 +631,7 @@ namespace MiniRPG_CS
 		}
 		private void EvaluateDefence(Actor defender, ref List<int> potentialHits)
 		{
-			var armorRating = 1f - MathF.Min(defender.Resource(ResourceType.Armor).Max < float.Epsilon ? 0f : defender.Resource(ResourceType.Armor).Max / 300f, 0.95f);
+			var armorRating = 1f - MathF.Min(defender.Resource(ResourceType.ArmorRating).Max < float.Epsilon ? 0f : defender.Resource(ResourceType.ArmorRating).Max / 300f, 0.95f);
 			for (var index = 0; index < potentialHits.Count; index++) if (potentialHits[index] > 0) potentialHits[index] = (int)MathF.Max(1f, MathF.Round(armorRating * potentialHits[index]));
 		}
 		private bool WillPotentiallyHit(Actor attacker, float toHitMod = 1f) => (new Random().NextDouble() * 100f) < MathF.Min(95f, MathF.Round(attacker.Resource(ResourceType.ChanceToHit).Max * toHitMod));
@@ -636,7 +654,7 @@ namespace MiniRPG_CS
 				$"They achieved level {actors[playerIndex].Level} before perishing.",
 				$"How tragic!" }, StateType.MainMenu, DrawTurns);
 		}
-		private string GetAttackString(string moveName, Actor actor, int times, float damagePercentage, float toHitMod) => $"{moveName}({toHitMod * actor.Resource(ResourceType.ChanceToHit).Max}% to hit, {times}x{(int)MathF.Round(actor.Resource(ResourceType.Damage).Max * damagePercentage)} damage)";
+		private string GetAttackString(string moveName, Actor actor, int times, float damagePercentage, float toHitMod) => $"{moveName}({(int)MathF.Round(toHitMod * actor.Resource(ResourceType.ChanceToHit).Max)}% to hit, {times}x{(int)MathF.Round(actor.Resource(ResourceType.Damage).Max * damagePercentage)} damage)";
 	}
 
 	public class ItemConfig
@@ -667,7 +685,7 @@ namespace MiniRPG_CS
 
 		public Item(ItemConfig itemConfig, bool isForPlayer = false)
 		{
-			if ((ItemConfig = itemConfig) == null) ItemConfig = Defines.Items[Defines.RandomItems[new Random().Next(0, Defines.Items.Count)]];
+			if ((ItemConfig = itemConfig) == null) ItemConfig = Defines.Items[Defines.LootTable[new Random().Next(0, Defines.Items.Count)]];
 			for (var index = 0; index < Defines.Resources.Count; index++) resources.Add(new Resource(ItemConfig.ResourceConfigs[index]));
 			if (!isForPlayer || ItemConfig.Slot == ItemSlot.Consumable) return;
 			for (var index = 0; index < (int)MathF.Floor(Game.Instance.Level * Defines.ITEM_BONUSES_LEVEL_MOD); index++)
@@ -755,12 +773,14 @@ namespace MiniRPG_CS
 
 	public class Player : Actor
 	{
-		private int[] startingItems = new[] { 1, 9, 14 };
+		public int Depth { get; private set; } = 0;
+		private int[] startingItems = new[] { 3, 9, 14 };
 		public Player(string name) : base(name)
 		{
 			AddItems(startingItems);
 			AddAbilities(Defines.PlayerAbilityBonuses);
 		}
+		public void IncreaseDepth() => Depth++;
 	}
 
 	public class OpponentConfig
@@ -882,6 +902,7 @@ namespace MiniRPG_CS
 
 		public Map(int roomsAmount, Vec2Int startPosition = null)
 		{
+			((Player)Game.Instance.Player).IncreaseDepth();
 			rooms = new List<Room>() { new Room(startPosition ?? PlayerPosition, RoomType.Empty, RoomStatus.Explored) };
 			while (rooms.Count < roomsAmount)
 			{
